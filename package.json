@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "CRM project",
   "main": "app.js",
-  "dependencies": {},
+  "dependencies": {
+    "dataframe-js": "^1.2.4",
+    "r-script": "0.0.3"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
