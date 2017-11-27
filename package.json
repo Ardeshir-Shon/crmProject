@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "test",
     "version": "1.0.0",
     "description": "CRM project",
@@ -18,3 +19,24 @@
     "author": "Ardeshir, HamidReza",
     "license": "ISC"
 }
+=======
+  "name": "test",
+  "version": "1.0.0",
+  "description": "CRM project",
+  "main": "app.js",
+  "dependencies": {
+    "dataframe-js": "^1.2.4",
+    "r-script": "0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "CRM",
+    "clustering"
+  ],
+  "author": "Ardeshir, HamidReza",
+  "license": "ISC"
+}
+>>>>>>> 1822a76777aae88e7a06657c123a82f66c69ce66
