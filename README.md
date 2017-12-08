@@ -1,5 +1,7 @@
 # crmProject
 
-upload your CSV file and give us your buisiness domain
+upload your CSV file of transactions 
 
-to get optimum way of customer segmentation.
+and give us your buisiness domain to
+
+get optimum way of customer segmentation.
