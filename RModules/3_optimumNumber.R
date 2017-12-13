@@ -38,7 +38,7 @@ normal <- data.table(normal,Cluster=segUsers$cluster)
 #groupMean(normal[,-1],normal$Cluster)
 
 Sys.setenv(RSTUDIO_PANDOC=sprintf("%s/pandoc",tilda))#define PANDOC directory
-
+ 
 cols<-brewer.pal(n=k,name="Set1")
 cols_t1<-cols[normal$Cluster]
 addr=sprintf("%s/plots",tilda)
@@ -52,18 +52,18 @@ htmlwidgets::saveWidget(p,file=sprintf("%s/fm.html",addr))
 p<- plot_ly(normal, x = ~Monetary , y = ~Recency)
 p<- add_markers(p,color =cols_t1)
 htmlwidgets::saveWidget(p,file=sprintf("%s/mr.html",addr))
-query<- sprintf("SELECT 
+query<- sprintf("SELECT
                 User,
                 case when Frequency <%d then 1
                 when Frequency >=%d and Frequency <=%d then 2
                 else 3 end as freq_type
-                
-                
+
+
                 ,case when Monetary <%d then 1
                 when Monetary >=%d and Monetary <=%d then 2
                 else 3 end as mone_type
-                
-                
+
+
                 ,case when Recency <%d then 3
                 when Recency >=%d and Recency <=%d then 2
                 else 1 end as rec_type
@@ -74,3 +74,4 @@ for (i in 1:nrow(binSet)) binSet$value[i] <- testFun(binSet[i,])
 setEnviromentVar(binSet,tilda,"binset")
 setEnviromentVar(newRFM,tilda,"newRFM")
 setEnviromentVar(normal,tilda,"normal")
+rm(list = ls())

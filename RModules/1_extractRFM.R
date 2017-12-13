@@ -1,3 +1,9 @@
+#dir.create(sprintf("%s/lib",input[[1]]))
+#.libPaths(sprintf("%s/lib",input[[1]]))
+#install.packages(c("data.table","htmlwidgets","sqldf","RColorBrewer","plotly"),lib = sprintf("%s/lib",input[[1]]),repos = "http://cran.us.r-project.org")
+#install.packages("needs",lib = sprintf("%s/lib",input[[1]]),repos = "http://cran.us.r-project.org")
+#library(needs)
+#library(data.table,lib.loc = sprintf("%s/lib",input[[1]]))
 library(data.table)
 
 getEnviromentVar<- function(tilda,name){
@@ -16,7 +22,7 @@ extractRFM <- function(transaction_list){
   )
 }
 
-tilda=input[[1]]
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"
 dir.create(sprintf("%s/RModules/dataHolder",tilda))
 transactions <- fread(file=sprintf("%s/trans-df.csv",tilda),header = TRUE)
 transactions <- transactions[order(userID)]
@@ -24,3 +30,4 @@ RFM <- extractRFM(transactions)
 RFM <- setnames(RFM,c("userID","N"),c("User","Frequency"))
 transactionPayMean <- mean(transactions$amount)
 setEnviromentVar(RFM,tilda,"rfm")
+rm(list = ls())

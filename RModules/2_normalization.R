@@ -1,3 +1,4 @@
+#.libPaths(sprintf("%s/lib",input[[1]]))
 library(data.table)
 
 getEnviromentVar<- function(tilda,name){
@@ -25,7 +26,7 @@ normalization <- function(dt){
   return(out)
 }
 
-tilda=input[[1]]
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"
 
 RFM <- getEnviromentVar(tilda,"rfm") #pipeline passing enviroment
 normal <- normalization(RFM)
@@ -34,3 +35,4 @@ newRFM <- newRFM[,-c(5,6,7)]
 setnames(newRFM,c("Frequency.x","Recency.x","Monetary.x"),c("Frequency","Recency","Monetary"))
 setEnviromentVar(newRFM,tilda,"newRFM")
 setEnviromentVar(normal,tilda,"normal")
+rm(list = ls())
