@@ -102,9 +102,10 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-pandoc/pandoc/
+pandoc/pandoc
 plots/
 RModules/dataHolder/
+trans-df.csv
 trans-df.csv/
 
 # Typescript v1 declaration files
