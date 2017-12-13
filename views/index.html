@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="./jquery-ui-1.12.1.custom/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src="./jquery.progressbar.js"></script>
+    <link rel="stylesheet" media="all" href="./jquery.progressbar.css" />
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        body {
+            padding: 30px;
+        }
+        
+        #slider,
+        #slider2,
+        #slider3 {
+            margin-top: 12px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+        
+        .fileUpload {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fileUpload input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+        }
+        
+        .progress {
+            margin-bottom: 0;
+        }
+        
+        .form-group,
+        .input {
+            margin-top: 20px;
+        }
+        
+        #coloredSlider {
+            float: left;
+            clear: left;
+            width: 100%;
+        }
+        
+        #coloredSlider .ui-slider-range {
+            background: #ff0000;
+        }
+        
+        #coloredSlider .ui-state-default,
+        .ui-widget-content .ui-state-default {
+            background: none;
+            background-color: #FFF;
+        }
+    </style>
+
+    <title>home</title>
+    <script type="text/javascript" src="slider.js"></script>
+    <script type="text/javascript" src="fileUploader.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row" style="margin-top: 15px">
+            <div id="steps"></div>
+        </div>
+        <div class="row" style="margin-top: 15px">
+            <form class="col-sm-12">
+                <span class="fileUpload btn btn-default">
+                        ارسال فایل <span class="glyphicon glyphicon-upload"></span>
+                <input type="file" id="uploadFile">
+                </span>
+            </form>
+
+            <p id="fileUploadError" class="text-danger hide"></p>
+
+            <div class="list-group" id="files"></div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر R:</label>
+                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
+                <div class="cols-sm-offset-8"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="content">
+                <div id="slider"></div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر F:</label>
+                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
+                <div class="cols-sm-offset-8"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="content2">
+                <div id="slider2"></div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر M:</label>
+                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
+                <div class="cols-sm-offset-8"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="content3">
+                <div id="slider3"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="content4">
+                <div id="coloredSlider" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
