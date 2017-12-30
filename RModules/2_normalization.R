@@ -26,7 +26,7 @@ normalization <- function(dt){
   return(out)
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 RFM <- getEnviromentVar(tilda,"rfm") #pipeline passing enviroment
 normal <- normalization(RFM)
@@ -35,4 +35,6 @@ newRFM <- newRFM[,-c(5,6,7)]
 setnames(newRFM,c("Frequency.x","Recency.x","Monetary.x"),c("Frequency","Recency","Monetary"))
 setEnviromentVar(newRFM,tilda,"newRFM")
 setEnviromentVar(normal,tilda,"normal")
-rm(list = ls())
+output<- sprintf("%d;%d;%d;%d;%d;%d",min(newRFM$Recency),max(newRFM$Recency),min(newRFM$Frequency),max(newRFM$Frequency),min(newRFM$Monetary),max(newRFM$Monetary))
+#rm(list = ls())
+output

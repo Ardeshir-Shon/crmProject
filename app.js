@@ -44,6 +44,9 @@ app.post('/upload', function(req, res) {
         var R = require("r-script");
         var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
         var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+        console.log(out);
+        minMaxValues=out;
+        console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
         try {
             var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
         } catch (err) {
@@ -69,8 +72,8 @@ app.post('/upload', function(req, res) {
 
 app.post('/RFMParam', function(req, res) {
 
-    res.send("the valuses is: " + req.body.R + req.body.F + req.body.M);
-    console.log("recieved!")
+    res.send("the values is: " + req.body.R + req.body.F + req.body.M);
+    console.log("received!")
         // shit(req);
 });
 
