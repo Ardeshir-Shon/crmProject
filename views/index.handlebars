@@ -1,150 +1,129 @@
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="http://code.jquery.com/jquery-1.10.1.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="jquery-ui-1.12.1.custom/jquery-ui.css">
-    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-    <script type="text/javascript" src="jquery.progressbar.js"></script>
-    <link rel="stylesheet" media="all" href="jquery.progressbar.css" />
-    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-        body {
-            padding: 30px;
-        }
-        
-        #slider,
-        #slider2,
-        #slider3 {
-            margin-top: 12px;
-            margin-right: 20px;
-            margin-left: 20px;
-        }
-        
-        .fileUpload {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .fileUpload input {
-            position: absolute;
-            top: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
-            cursor: pointer;
-            opacity: 0;
-        }
-        
-        .progress {
-            margin-bottom: 0;
-        }
-        
-        .form-group,
-        .input {
-            margin-top: 20px;
-        }
-        
-        #coloredSlider {
-            float: left;
-            clear: left;
-            width: 100%;
-        }
-        
-        #coloredSlider .ui-slider-range {
-            background: #ff0000;
-        }
-        
-        #coloredSlider .ui-state-default,
-        .ui-widget-content .ui-state-default {
-            background: none;
-            background-color: #FFF;
-        }
-    </style>
+     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    {{!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> --}}
+    
+    
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/slider.js"></script>
+    <script src="https://use.fontawesome.com/5881fd899f.js"></script>
+    <link href="css/styles.css" rel="stylesheet">
 
-    <title>{{title}}</title>
-    <script type="text/javascript" src="slider.js"></script>
-    <script type="text/javascript" src="fileUploader.js"></script>
+    
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row" style="margin-top: 15px">
-            <div id="steps"></div>
-        </div>
-        <div class="row" style="margin-top: 15px">
-            {{!-- <form class="col-sm-12">
-                <span class="fileUpload btn btn-default">
-                        ارسال فایل <span class="glyphicon glyphicon-upload"></span>
-                <input type="file" id="uploadFile">
-                </span>
-            </form>
 
-            <p id="fileUploadError" class="text-danger hide"></p>
+    <div class="form-horizontal" id="msform">
+        <!-- progressbar -->
+        <ul id="progressbar">
+            <li class="active">معرفی</li>
+            <li>آپلود فایل</li>
+            <li>تعیین ضریب</li>
+            <li>تعیین بازه</li>
+            <li>نتایج</li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset>
+            <div class="row">
+                <h2 class="fs-title" style="font-size: 15px; line-height: 20px; text-align: right;">لورم ایپسوم یا طرح‌نما (به انگلیسی: Lorem ipsum) به متنی آزمایشی و بی‌معنی در صنعت چاپ، صفحه‌آرایی و طراحی گرافیک گفته می‌شود. طراح گرافیک از این متن به عنوان عنصری از ترکیب بندی برای پر کردن صفحه و ارایه اولیه شکل ظاهری و کلی طرح سفارش گرفته شده استفاده می نماید، تا از نظر گرافیکی نشانگر چگونگی نوع و اندازه فونت و ظاهر متن باشد. معمولا طراحان گرافیک برای صفحه‌آرایی، نخست از متن‌های آزمایشی و بی‌معنی استفاده می‌کنند تا صرفا به مشتری یا صاحب کار خود نشان دهند که صفحه طراحی یا صفحه بندی شده بعد از اینکه متن در آن قرار گیرد چگونه به نظر می‌رسد و قلم‌ها و اندازه‌بندی‌ها چگونه در نظر گرفته شده‌است. از آنجایی که طراحان عموما نویسنده متن نیستند و وظیفه رعایت حق تکثیر متون را ندارند و در همان حال کار آنها به نوعی وابسته به متن می‌باشد آنها با استفاده از محتویات ساختگی، صفحه گرافیکی خود را صفحه‌آرایی می‌کنند تا مرحله طراحی و صفحه‌بندی را به پایان برند.</h2>
+                {{!-- <p>{{send}}</p> --}}
+            </div>
+            <input type="button" name="next" class="next action-button" value="بعدی" />
+        </fieldset>
 
-            <div class="list-group" id="files"></div> --}}
+        <fieldset>
+            <div class="row">
+                <div class="panel-body">
+                    <h2 class="fs-title">فایل مد نظر خود را آپلود کنید</h2>
+                    <p>{{send}}</p>
+                        <button class="btn btn-lg upload-btn" type="button">انتخاب فایل</button>
+                        <div class="progress" >
+                            <div class="progress-bar" role="progressbar"></div>
+                        </div>
+                </div>
+            </div>
+            <input type="button" name="next" class="next action-button" value="بعدی" />
+            <input type="button" name="previous" class="previous action-button" value="قبلی" />
+        </fieldset>
 
-            <form class "col-sm-12" id="uploadForm"
-            enctype="multipart/form-data"
-            action="/api/photo"
-            method="post">
-            <input type="file" name="userPhoto" />
-            <input type="submit" value="ارسال فایل" name="submit">
-            <span id = "status"></span>
-            </form>
-        </div>
-        <div class="form-horizontal">
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر R:</label>
-                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
-                <div class="cols-sm-offset-8"></div>
+        <fieldset>
+            <div class="form-inline">
+                <div class="form-group">
+                    <h2 class="fs-title" style="font-size: 13px; line-height: 18px; text-align: right;"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</h2>
+                    <label for="amount"> ضریب ارزش پارامتر R:</label>
+                    <input type="text" class="form-control" id= "RParam" name="value" value="1" style="text-align: center; width: 40px;">
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="content">
-                <div id="slider"></div>
+            <div class="form-inline">
+                <div class="form-group">
+                    <h2 class="fs-title" style="font-size: 13px; line-height: 18px; text-align: right;"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</h2>
+                    <label for="amount"> ضریب ارزش پارامتر F:</label>
+                    <input type="text" class="form-control" id= "FParam" name="value" value="1" style="text-align: center; width: 40px;">
+                </div>
             </div>
-        </div>
-        <div class="form-horizontal">
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر F:</label>
-                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
-                <div class="cols-sm-offset-8"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="content2">
-                <div id="slider2"></div>
-            </div>
-        </div>
+            
 
-        <div class="form-horizontal">
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="amount"> ضریب ارزش پارامتر M:</label>
-                <input type="text" class="form-control col-sm-2" name="value" value="1" style="text-align: center; width: 40px;">
-                <div class="cols-sm-offset-8"></div>
+            <div class="form-inline">
+                <div class="form-group">
+                    <h2 class="fs-title" style="font-size: 13px; line-height: 18px; text-align: right;"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</h2>
+                    <label for="amount"> ضریب ارزش پارامتر M:</label>
+                    <input type="text" class="form-control" id="MParam" name="value" value="1" style="text-align: center; width: 40px;">
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="content3">
-                <div id="slider3"></div>
-            </div>
-        </div>
+            
 
-        <div class="row">
-            <div class="content4">
-                <div id="coloredSlider" style="margin-top: 15px;"></div>
+            <input type="button" name="next" id = "nextsubmit" class="next action-button" value="بعدی" />
+            <input type="button" name="previous" class="previous action-button" value="قبلی" />    
+        </fieldset>
+        <fieldset class="hasSlides">
+            <div class="row" style="margin-top: 30px;">
+                <label style="text-align:right "> بازه پارامتر R:</label>
+                <div class="content">
+                    <div id="slider"></div>
+                </div>
             </div>
-        </div>
 
+            <div class="row" style="margin-top: 30px;">
+                <label style="text-align:right "> بازه پارامتر F:</label>
+                <div class="content2">
+                    <div id="slider2"></div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 30px;">
+                <label style="text-align:right "> بازه پارامتر M:</label>
+                <div class="content3">
+                    <div id="slider3"></div>
+                </div>
+            </div>
+
+            <input type="button" id= "sliderSubmit" name="next" class="next action-button" value="بعدی" />
+            <input type="button" name="previous" class="previous action-button" value="قبلی" />   
+        </fieldset>
+
+        <fieldset>
+            {{!-- <h2 class="fs-title">Personal Details</h2>
+            <h3 class="fs-subtitle">We will never sell it</h3>
+            <input type="text" name="fname" placeholder="First Name" />
+            <input type="text" name="lname" placeholder="Last Name" />
+            <input type="text" name="phone" placeholder="Phone" />
+            <textarea name="address" placeholder="Address"></textarea>
+            <input type="button" name="previous" class="previous action-button" value="قبلی" /> --}}
+            <input type="button" name="previous" class="previous action-button" value="قبلی" />  
+        </fieldset>
     </div>
 
+    <script src="javascripts/index.js"></script>
+
+    <input id="upload-input" type="file" name="uploads[]" multiple="multiple"></br>
+    <script src="javascripts/upload.js"></script>
 </body>
 
 </html>

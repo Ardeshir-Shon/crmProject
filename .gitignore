@@ -106,6 +106,7 @@ pandoc/pandoc
 plots/
 RModules/dataHolder/
 trans-df.csv
+.RData
 
 # Typescript v1 declaration files
 typings/
