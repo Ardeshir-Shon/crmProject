@@ -22,7 +22,7 @@ extractRFM <- function(transaction_list){
   )
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 dir.create(sprintf("%s/RModules/dataHolder",tilda))
 transactions <- fread(file=sprintf("%s/trans-df.csv",tilda),header = TRUE)
 transactions <- transactions[order(userID)]
@@ -30,4 +30,4 @@ RFM <- extractRFM(transactions)
 RFM <- setnames(RFM,c("userID","N"),c("User","Frequency"))
 transactionPayMean <- mean(transactions$amount)
 setEnviromentVar(RFM,tilda,"rfm")
-rm(list = ls())
+#rm(list = ls())

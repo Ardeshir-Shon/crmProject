@@ -11,7 +11,12 @@
     "express-handlebars": "^3.0.0",
     "formidable": "^1.1.1",
     "handlebars": "^4.0.11",
+<<<<<<< HEAD
+    "mysql": "^2.15.0",
     "nodemon": "^1.12.6",
+=======
+    "nodemon": "^1.14.6",
+>>>>>>> 14d078165092677d00c6f717dabf36364d0402e4
     "r-script": "0.0.3"
   },
   "scripts": {
@@ -22,5 +27,8 @@
     "clustering"
   ],
   "author": "Ardeshir, HamidReza",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "1.9.2"
+  }
 }

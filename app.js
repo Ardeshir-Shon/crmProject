@@ -5,6 +5,8 @@ var app = express();
 var formidable = require('formidable');
 var fs = require('fs')
 var bodyParser = require('body-parser');
+var mysql = require('mysql');
+let config = require('./public/javascripts/config.js');
 
 app.set('view engine', 'handlebars');
 app.set('views', './views');
@@ -19,9 +21,19 @@ app.engine('handlebars', expressHandlebars({
 
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
+app.get('/process', function(req, res) {
 
     res.render(path.join(__dirname, 'views/index.handlebars'));
+});
+
+app.get('/', function(req, res) {
+
+    res.render(path.join(__dirname, 'views/signup.handlebars'));
+});
+
+app.get('/login', function(req, res) {
+
+    res.render(path.join(__dirname, 'views/login.handlebars'));
 });
 
 app.post('/upload', function(req, res) {
@@ -39,21 +51,33 @@ app.post('/upload', function(req, res) {
     // rename it to it's orignal name
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
-
         console.log("uploaded.")
+<<<<<<< HEAD
+            // var R = require("r-script");
+            // var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // try {
+            //     var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // } catch (err) {
+            //     console.log("plots created ...")
+            // }
+            // console.log(__dirname.replace(/\\/g, '/'))
+=======
         var R = require("r-script");
         var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
         var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+        console.log(out);
+        minMaxValues=out;
+        console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
         try {
             var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
         } catch (err) {
             console.log("plots created ...")
         }
         console.log(__dirname.replace(/\\/g, '/'))
+>>>>>>> 14d078165092677d00c6f717dabf36364d0402e4
             //console.log(JSON.parse(JSOout[0]));
-            // var test = { 'send': 'sjdhs' };
         res.end('success');
-
     });
 
     // log any errors that occur
@@ -67,23 +91,38 @@ app.post('/upload', function(req, res) {
     // res.sendfile(path.join(__dirname, "plots", "mr.html"));
 });
 
+app.post('/login', function(req, res) {
+
+    res.send("the valuses is: " + req.body.email + " | " + req.body.password);
+    console.log(req.body.email)
+});
+
 app.post('/RFMParam', function(req, res) {
 
+<<<<<<< HEAD
     res.send("the valuses is: " + req.body.R + req.body.F + req.body.M);
-    console.log("recieved!")
+=======
+    res.send("the values is: " + req.body.R + req.body.F + req.body.M);
+    console.log("received!")
         // shit(req);
+>>>>>>> 14d078165092677d00c6f717dabf36364d0402e4
 });
 
-app.post('/sliderParam', function(req, res) {
+app.post('/RFMRange', function(req, res) {
 
+    res.send("the valuses is: " + req.body.rRange + req.body.fRange + req.body.mRange);
+    // shit(req);
 });
-
-// function shit(param) {
-//     b = req.body.content;
-//     b++;
-//     console.log(b);
-// }
 
 app.listen(3000, function() {
     console.log("Working on port 3000");
 });
+
+// var max = 12;
+// var min = 120;
+
+
+// module.exports.min = min;
+// module.exports.max = max;
+
+var con = mysql.createConnection(config);

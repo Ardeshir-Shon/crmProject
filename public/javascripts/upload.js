@@ -1,8 +1,14 @@
+var isDone;
 $('.upload-btn').on('click', function() {
     $('#upload-input').click();
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
 });
+
+$("#nextOfFile").hide();
+$("#nextOfParam").hide();
+$("#nextOfRange").hide();
+
 
 $('#upload-input').on('change', function() {
 
@@ -48,7 +54,11 @@ $('#upload-input').on('change', function() {
 
                         // once the upload reaches 100%, set the progress bar text to done
                         if (percentComplete === 100) {
-                            $('.progress-bar').html('بارگذاری شد');
+                            $('.progress-bar').html('<i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp  بارگذاری شد');
+                            isDone = true;
+                            console.log("isDone is : " + isDone);
+                            $("#nextOfFile").show();
+
                         }
 
                     }
@@ -60,8 +70,8 @@ $('#upload-input').on('change', function() {
     }
 });
 
-
-$('#nextsubmit').on('click', function() {
+$('#paramSubmit').on('click', function() {
+    // $(this).hide();
     var data = {}
     var R = $('#RParam').val();
     var F = $('#FParam').val();
@@ -81,6 +91,57 @@ $('#nextsubmit').on('click', function() {
         success: (data) => {
             console.log("success")
             console.log(JSON.stringify(data));
+            $("#nextOfParam").show();
+            // outputs "SUCESSSSS"
+        }
+    });
+});
+
+$('#rangeSubmit').on('click', function() {
+    var data = {}
+    var rRange = $('#slider').slider("values");
+    var fRange = $('#slider2').slider("values");
+    var mRange = $('#slider3').slider("values");
+
+    data.rRange = rRange;
+    data.fRange = fRange;
+    data.mRange = mRange;
+
+    $.ajax({
+        url: "/RFMRange",
+        // datatype: 'jsonp',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        type: "POST",
+        success: (data) => {
+            console.log("success")
+            console.log(JSON.stringify(data));
+            $("#nextOfRange").show();
+            // outputs "SUCESSSSS"
+        }
+    });
+});
+
+
+$('#loginSubmit').on('click', function() {
+    var user = {}
+    var email = $('#loginEmail').val();
+    var password = $('#loginPassword').val();
+
+
+    user.email = email;
+    user.password = password;
+
+    $.ajax({
+        url: "/login",
+        // datatype: 'jsonp',
+        data: JSON.stringify(user),
+        contentType: 'application/json',
+        type: "POST",
+        success: (data) => {
+            console.log("success")
+            console.log(JSON.stringify(user));
+            $("#nextOfRange").show();
             // outputs "SUCESSSSS"
         }
     });

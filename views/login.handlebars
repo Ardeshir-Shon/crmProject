@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
+     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/5881fd899f.js"></script>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid">
+<div class="form-horizontal" id="msform" >
+    <fieldset>
+    <p style="font-weight: bold; font-size: 20px;">ورود</p>
+    <p></p>
+    {{!-- <h3 class="fs-subtitle">We will never sell it</h3> --}}
+
+    <div class="row" style="margin-top:20px; margin-bottom: 20px;">
+        <label class="control-label col-sm-3" style="padding-bottom:10px;" >ایمیل:</label>
+	    <div class="col-sm-7">
+	        <input type="text" id= "loginEmail" class="form-control" placeholder="someone@somthing.com" style="text-align: left; direction: ltr;">
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px; margin-bottom: 20px;">
+        <label class="control-label col-sm-3" style="padding-bottom:10px;" >رمز عبور:</label>
+	    <div class="col-sm-7">
+	        <input type="password" id = "loginPassword" class="form-control" placeholder="Password" style="text-align: left; direction: ltr;"/>
+        </div>
+    </div>
+
+    <p style="font-size: 12px; margin-bottom:15px;">پیش از این ثبت‌نام نکرده‌اید؟ <a href="/">ثبت نام کنید.</a></p>
+
+    {{!-- <a href="/process" id= "loginSubmit"> --}}
+    <button type="button" id= "loginSubmit" class="btn" style="width: 80px; background: #27AE60; font-weight: bold; color: white; border: 0 none; border-radius: 1px; cursor: pointer;border-radius: 5px;">ورود</button>
+    {{!-- </a> --}}
+    </fieldset>
+    </div>
+</div>
+<script src="javascripts/upload.js"></script>
+</body>
+</html>

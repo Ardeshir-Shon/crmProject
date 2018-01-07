@@ -1,4 +1,5 @@
 var loadslider;
+
 $(window).load(function() {
     // Just a helper i use
     $.fn.presence = function() {
@@ -139,6 +140,8 @@ $(window).load(function() {
             }
         });
     }
+
+
 
     // $('#coloredSlider').slider({
     //     range: true,

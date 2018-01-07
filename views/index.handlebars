@@ -8,14 +8,12 @@
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     {{!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> --}}
     
-    
     <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="javascripts/slider.js"></script>
+    <script type="text/javascript" src="javascripts/popup.js"></script>
     <script src="https://use.fontawesome.com/5881fd899f.js"></script>
     <link href="css/styles.css" rel="stylesheet">
-
-    
 </head>
 
 <body>
@@ -23,11 +21,12 @@
     <div class="form-horizontal" id="msform">
         <!-- progressbar -->
         <ul id="progressbar">
-            <li class="active">معرفی</li>
+            <li class="active">آشنایی</li>
             <li>آپلود فایل</li>
-            <li>تعیین ضریب</li>
-            <li>تعیین بازه</li>
-            <li>نتایج</li>
+            <li>تعیین ضرایب</li>
+            <li>‌تعیین بازه‌ها</li>
+            <li>نمودارها</li>
+            <li>نتیجه و تحلیل</li>
         </ul>
         <!-- fieldsets -->
         <fieldset>
@@ -42,14 +41,13 @@
             <div class="row">
                 <div class="panel-body">
                     <h2 class="fs-title">فایل مد نظر خود را آپلود کنید</h2>
-                    <p>{{send}}</p>
-                        <button class="btn btn-lg upload-btn" type="button">انتخاب فایل</button>
-                        <div class="progress" >
+                        <button class="btn btn-lg upload-btn" type="button"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp  انتخاب فایل</button>
+                        <div class="progress" style= "width: 90% ;margin: 0 5%;">
                             <div class="progress-bar" role="progressbar"></div>
                         </div>
                 </div>
             </div>
-            <input type="button" name="next" class="next action-button" value="بعدی" />
+            <input type="button" id= "nextOfFile" name="next" class="next action-button" value="بعدی"/>
             <input type="button" name="previous" class="previous action-button" value="قبلی" />
         </fieldset>
 
@@ -76,10 +74,12 @@
                     <label for="amount"> ضریب ارزش پارامتر M:</label>
                     <input type="text" class="form-control" id="MParam" name="value" value="1" style="text-align: center; width: 40px;">
                 </div>
+            </div> 
+            <div class="row">
+            <button type="button" id ="paramSubmit" class="btn btn-lg"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp  تأیید مقادیر</button> 
             </div>
-            
 
-            <input type="button" name="next" id = "nextsubmit" class="next action-button" value="بعدی" />
+            <input type="button" id= "nextOfParam" name="next" class="next action-button" value="بعدی" />
             <input type="button" name="previous" class="previous action-button" value="قبلی" />    
         </fieldset>
         <fieldset class="hasSlides">
@@ -92,6 +92,8 @@
 
             <div class="row" style="margin-top: 30px;">
                 <label style="text-align:right "> بازه پارامتر F:</label>
+                <p>{{min}}</p>
+                <p style="display: none;">{{max}}</p>
                 <div class="content2">
                     <div id="slider2"></div>
                 </div>
@@ -104,18 +106,79 @@
                 </div>
             </div>
 
-            <input type="button" id= "sliderSubmit" name="next" class="next action-button" value="بعدی" />
+            <div class="row">
+            <button type="button" id ="rangeSubmit" class=" btn btn-lg"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp  تأیید بازه‌ها</button> 
+            </div>
+
+            <input type="button" id= "nextOfRange" name="next" class="next action-button" value="بعدی" />
             <input type="button" name="previous" class="previous action-button" value="قبلی" />   
         </fieldset>
 
         <fieldset>
-            {{!-- <h2 class="fs-title">Personal Details</h2>
-            <h3 class="fs-subtitle">We will never sell it</h3>
-            <input type="text" name="fname" placeholder="First Name" />
-            <input type="text" name="lname" placeholder="Last Name" />
-            <input type="text" name="phone" placeholder="Phone" />
-            <textarea name="address" placeholder="Address"></textarea>
-            <input type="button" name="previous" class="previous action-button" value="قبلی" /> --}}
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6" id="gone" style="margin-top: 20px; margin-bottom: 20px;">
+                    <iframe src="/plots/mr.html" style="width:100%; height:400px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);" frameborder="0" scrolling="no">
+                        <p>Your browser does not support iframes.</p>
+                    </iframe>
+                    <button class="openpop btn btn-default" style="text-decoration: none ; margin-top: 20px;" ><i class="fa fa-arrows" aria-hidden="true"></i>&nbsp  مشاهده تمام صفحه</button>
+                    <button class="closepop btn btn-default" style="text-decoration: none; margin-top: 20px;"><i class="fa fa-times" aria-hidden="true"></i>&nbsp  بستن</button>
+                </div>
+
+                <div class="col-sm-6" id="gone2" style="margin-top: 20px; margin-bottom: 20px;">
+                    <iframe src="/plots/fr.html" style="width:100%; height:400px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);" frameborder="0" scrolling="no">
+                        <p>Your browser does not support iframes.</p>
+                    </iframe>
+                    <button class="openpop btn btn-default" style="text-decoration: none ; margin-top: 20px;" ><i class="fa fa-arrows" aria-hidden="true"></i>&nbsp  مشاهده تمام صفحه</button>
+                    <button class="closepop btn btn-default" style="text-decoration: none; margin-top: 20px;"><i class="fa fa-times" aria-hidden="true"></i>&nbsp  بستن</button>
+                </div>
+
+                <div class="col-sm-6" id="gone3" style="margin-top: 20px; margin-bottom: 20px;">
+                    <iframe  src="/plots/fm.html" style="width:100% ;height:400px;     border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);" frameborder="0" scrolling="no">
+                        <p>Your browser does not support iframes.</p>
+                    </iframe>
+                    <button class="openpop btn btn-default" style="text-decoration: none ; margin-top: 20px;" ><i class="fa fa-arrows" aria-hidden="true"></i>&nbsp  مشاهده تمام صفحه</button>
+                    <button class="closepop btn btn-default" style="text-decoration: none; margin-top: 20px;"><i class="fa fa-times" aria-hidden="true"></i>&nbsp  بستن</button>
+                </div>
+            </div>
+            </div>
+
+            <input type="button" id="plotNext" class="next action-button" value="بعدی" />
+            <input type="button" id="plotPrev" class="previous action-button" value="قبلی" />  
+        </fieldset>
+        
+        <fieldset>
+            <div class = "row">
+                <h2 class="fs-title" style="font-size: 15px; line-height: 20px; text-align: right;">لورم ایپسوم یا طرح‌نما (به انگلیسی: Lorem ipsum) به متنی آزمایشی و بی‌معنی در صنعت چاپ، صفحه‌آرایی و طراحی گرافیک گفته می‌شود. طراح گرافیک از این متن به عنوان عنصری از ترکیب بندی برای پر کردن صفحه و ارایه اولیه شکل ظاهری و کلی طرح سفارش گرفته شده استفاده می نماید، تا از نظر گرافیکی نشانگر چگونگی نوع و اندازه فونت و ظاهر متن باشد. معمولا طراحان گرافیک برای صفحه‌آرایی، نخست از متن‌های آزمایشی و بی‌معنی استفاده می‌کنند تا صرفا به مشتری یا صاحب کار خود نشان دهند که صفحه طراحی یا صفحه بندی شده بعد از اینکه متن در آن قرار گیرد چگونه به نظر می‌رسد و قلم‌ها و اندازه‌بندی‌ها چگونه در نظر گرفته شده‌است. از آنجایی که طراحان عموما نویسنده متن نیستند و وظیفه رعایت حق تکثیر متون را ندارند و در همان حال کار آنها به نوعی وابسته به متن می‌باشد آنها با استفاده از محتویات ساختگی، صفحه گرافیکی خود را صفحه‌آرایی می‌کنند تا مرحله طراحی و صفحه‌بندی را به پایان برند.</h2>
+            </div>
+            <div class="row"></div>
+            <div class="row" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+                <div class="col-sm-10" style="padding-top:10px; padding-bottom: 10px;">
+                    <p style="text-align:right">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+                </div>
+                <div class="col-sm-2" style="padding-top:14px; padding-bottom: 14px;">
+                    <button type="button" class="btn btn-success"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>&nbsp دانلود</button>
+                </div>
+            </div>
+            
+            <div class="row" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+                <div class="col-sm-10" style="padding-top:10px; padding-bottom: 10px;">
+                    <p style="text-align:right">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+                </div>
+                <div class="col-sm-2" style="padding-top:14px; padding-bottom: 14px;">
+                    <button type="button" class="btn btn-success"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>&nbsp دانلود</button>
+                </div>
+            </div>
+
+            <div class="row" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+                <div class="col-sm-10" style="padding-top:10px; padding-bottom: 10px;">
+                    <p style="text-align:right">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+                </div>
+                <div class="col-sm-2" style="padding-top:14px; padding-bottom: 14px;">
+                    <button type="button" class="btn btn-success"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>&nbsp دانلود</button>
+                </div>
+            </div>
+            
             <input type="button" name="previous" class="previous action-button" value="قبلی" />  
         </fieldset>
     </div>
