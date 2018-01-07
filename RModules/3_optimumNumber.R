@@ -16,7 +16,20 @@ testFun <- function(x){
   return(2*as.numeric(x$freq_type)+10*as.numeric(x$mone_type)+5*as.numeric(x$rec_type))
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"
+getOctet <- function(number,col){
+  if(number<=col[floor(length(col)/8)])
+    return(1)
+  else if(number<=col[floor(3*length(col)/8)])
+    return(2)
+  else if(number<=col[floor(5*length(col)/8)])
+    return(3)
+  else if(number<=col[floor(7*length(col)/8)])
+    return(4)
+  else
+    return(5)
+}
+
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 newRFM <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
 normal <- getEnviromentVar(tilda,"normal") #pipeline passing enviroment
@@ -71,7 +84,17 @@ query<- sprintf("SELECT
                 FROM newRFM",2,2,3,30000,30000,75000,14,14,30)
 binSet<- sqldf(query)
 for (i in 1:nrow(binSet)) binSet$value[i] <- testFun(binSet[i,])
+
+#describe each cluster
+desc <- list()
+for (i in 1:k) desc[[i]]=0
+for (i in 1:k){
+  desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Recency)),newRFM[order(Recency)]$Recency)
+  desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Frequency)),newRFM[order(Frequency)]$Frequency)
+  desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Monetary)),newRFM[order(Monetary)]$Monetary)
+}
+
 setEnviromentVar(binSet,tilda,"binset")
 setEnviromentVar(newRFM,tilda,"newRFM")
 setEnviromentVar(normal,tilda,"normal")
-rm(list = ls())
+#rm(list = ls())
