@@ -52,31 +52,19 @@ app.post('/upload', function(req, res) {
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
         console.log("uploaded.")
-<<<<<<< HEAD
             // var R = require("r-script");
             // var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
             // var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // console.log(out);
+            // minMaxValues=out;
+            // console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
             // try {
             //     var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
             // } catch (err) {
             //     console.log("plots created ...")
             // }
             // console.log(__dirname.replace(/\\/g, '/'))
-=======
-        var R = require("r-script");
-        var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        console.log(out);
-        minMaxValues=out;
-        console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
-        try {
-            var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        } catch (err) {
-            console.log("plots created ...")
-        }
-        console.log(__dirname.replace(/\\/g, '/'))
->>>>>>> 14d078165092677d00c6f717dabf36364d0402e4
-            //console.log(JSON.parse(JSOout[0]));
+            //     //console.log(JSON.parse(JSOout[0]));
         res.end('success');
     });
 
@@ -98,14 +86,7 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-
-<<<<<<< HEAD
     res.send("the valuses is: " + req.body.R + req.body.F + req.body.M);
-=======
-    res.send("the values is: " + req.body.R + req.body.F + req.body.M);
-    console.log("received!")
-        // shit(req);
->>>>>>> 14d078165092677d00c6f717dabf36364d0402e4
 });
 
 app.post('/RFMRange', function(req, res) {
