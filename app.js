@@ -52,19 +52,32 @@ app.post('/upload', function(req, res) {
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
         console.log("uploaded.")
-            // var R = require("r-script");
-            // var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            // var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            // console.log(out);
-            // minMaxValues=out;
-            // console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
-            // try {
-            //     var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            // } catch (err) {
-            //     console.log("plots created ...")
-            // }
-            // console.log(__dirname.replace(/\\/g, '/'))
-            //     //console.log(JSON.parse(JSOout[0]));
+            var R = require("r-script");
+            var out1 = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            var out2 = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            console.log(out2);
+            minMaxValues=out2;
+            console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
+            try {
+                var out3 = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            } catch (err) {
+                console.log("plots created ...")
+            }
+
+            try {
+                var out4 = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            } catch (err) {
+                console.log("clusters evaluated ...")
+            }
+            var evaluateClusters=out4;
+            var k=evaluateClusters.split(";")[0];
+            console.log(evaluateClusters);
+            console.log(k);
+            for (var i=1;i<=k;i++){
+                console.log(evaluateClusters.split(";")[i])
+            }
+            console.log(__dirname.replace(/\\/g, '/'))
+                //console.log(JSON.parse(JSOout[0]));
         res.end('success');
     });
 
