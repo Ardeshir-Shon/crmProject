@@ -6,8 +6,10 @@ var formidable = require('formidable');
 var fs = require('fs')
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
+var arraylist= require("arraylist");
+var R = require("r-script");
+let ExplinCluster= require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
-
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -18,6 +20,73 @@ app.engine('handlebars', expressHandlebars({
         }
     }
 }));
+
+var clusterAnalysis=new arraylist;
+
+var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(255,"این دسته از کاربران، کاربران وفادار و سود ده هستند که مدت کوتاهی است تراکنشی انجام نداده اند که زمان قابل توجهی نیست و بهتر است روی راضی نگه داتن آنها تمرکز کرد.");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(145,"این دسته از کاربران، کاربران نسبتا وفادار هستند که البته سود بسیار خوبی داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(154,"این دسته از کاربران، کاربران وفاداری هستند که سود نسبتا خوبی هم داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(144,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(355,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(455,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(555,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(345,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(344,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(354,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(534,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(434,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+var tempExplain=new ExplinCluster(155,"very good class");
+clusterAnalysis.add(tempExplain);
+
+clusterAnalysis.add(tempExplain);
+for (var i =0;i<clusterAnalysis.size();i++)
+    console.log(clusterAnalysis.get(i).getDescription())
 
 app.use(bodyParser.json());
 
@@ -52,29 +121,29 @@ app.post('/upload', function(req, res) {
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
         console.log("uploaded.")
-            var R = require("r-script");
-            var out1 = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            var out2 = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            console.log(out2);
-            minMaxValues=out2;
+            var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            console.log(out);
+            minMaxValues=out;
             console.log(minMaxValues.split(";")[3])// 3 is max of F as you can understand
             try {
-                var out3 = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+                var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
             } catch (err) {
                 console.log("plots created ...")
             }
 
             try {
-                var out4 = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+                var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
             } catch (err) {
                 console.log("clusters evaluated ...")
             }
-            var evaluateClusters=out4;
+            var evaluateClusters=out;
             var k=evaluateClusters.split(";")[0];
             console.log(evaluateClusters);
             console.log(k);
             for (var i=1;i<=k;i++){
                 console.log(evaluateClusters.split(";")[i])
+
             }
             console.log(__dirname.replace(/\\/g, '/'))
                 //console.log(JSON.parse(JSOout[0]));
