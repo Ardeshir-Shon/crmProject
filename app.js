@@ -10,6 +10,7 @@ var arraylist= require("arraylist");
 var R = require("r-script");
 let ExplinCluster= require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
+var con = mysql.createConnection(config);
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,70 +24,71 @@ app.engine('handlebars', expressHandlebars({
 
 var clusterAnalysis=new arraylist;
 
-var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(255,"این دسته از کاربران، کاربران وفادار و سود ده هستند که مدت کوتاهی است تراکنشی انجام نداده اند که زمان قابل توجهی نیست و بهتر است روی راضی نگه داتن آنها تمرکز کرد.");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(145,"این دسته از کاربران، کاربران نسبتا وفادار هستند که البته سود بسیار خوبی داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(154,"این دسته از کاربران، کاربران وفاداری هستند که سود نسبتا خوبی هم داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(144,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(355,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(455,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(555,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(345,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(344,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(354,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(534,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(434,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
-var tempExplain=new ExplinCluster(155,"very good class");
-clusterAnalysis.add(tempExplain);
 
-clusterAnalysis.add(tempExplain);
-for (var i =0;i<clusterAnalysis.size();i++)
-    console.log(clusterAnalysis.get(i).getDescription())
+// var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(255,"این دسته از کاربران، کاربران وفادار و سود ده هستند که مدت کوتاهی است تراکنشی انجام نداده اند که زمان قابل توجهی نیست و بهتر است روی راضی نگه داتن آنها تمرکز کرد.");
+// clusterAnalysis.add(tempExplain)
+// var tempExplain=new ExplinCluster(145,"این دسته از کاربران، کاربران نسبتا وفادار هستند که البته سود بسیار خوبی داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(154,"این دسته از کاربران، کاربران وفاداری هستند که سود نسبتا خوبی هم داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+// clusterAnalysis.add(tempExplain);;
+// var tempExplain=new ExplinCluster(144,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(355,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(455,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(555,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(345,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(344,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(354,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(534,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(434,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(155,"very good class");
+// clusterAnalysis.add(tempExplain);
+//
+// clusterAnalysis.add(tempExplain);
+// for (var i =0;i<clusterAnalysis.size();i++)
+//     console.log(clusterAnalysis.get(i).getDescription())
 
 app.use(bodyParser.json());
 
@@ -142,8 +144,12 @@ app.post('/upload', function(req, res) {
             console.log(evaluateClusters);
             console.log(k);
             for (var i=1;i<=k;i++){
-                console.log(evaluateClusters.split(";")[i])
-
+                //console.log(evaluateClusters.split(";")[i])
+                var sql = "SELECT desc FROM type_desc WHERE type = '" + evaluateClusters.split(";")[i] + "'"
+                con.query(sql, function(err, result) {
+                    if (err) throw err; // type not defined in DB
+                    clusterAnalysis.add(JSON.parse(result[0].desc));
+                });
             }
             console.log(__dirname.replace(/\\/g, '/'))
                 //console.log(JSON.parse(JSOout[0]));

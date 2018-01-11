@@ -39,12 +39,16 @@ for(i in 1:19){
 
 newRFM <- newRFMClustered
 #describe each cluster
+addr=sprintf("%s/public/classes",tilda)
+dir.create(addr)
 desc <- list()
 for (i in 1:k) desc[[i]]=0
 for (i in 1:k){
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Recency)),newRFM[order(Recency)]$Recency)
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Frequency)),newRFM[order(Frequency)]$Frequency)
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Monetary)),newRFM[order(Monetary)]$Monetary)
+  temp <- newRFM[which(newRFM$Cluster==i),]
+  write.csv(data,sprintf("%s/public/classes/%d.csv",tilda,i),row.names = FALSE,col.names = names(temp))
 }
 output <- sprintf("%d",k)
 for(i in 1:k) output<- sprintf("%s;%d",output,desc[[i]])
