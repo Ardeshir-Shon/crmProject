@@ -36,5 +36,5 @@ setnames(newRFM,c("Frequency.x","Recency.x","Monetary.x"),c("Frequency","Recency
 setEnviromentVar(newRFM,tilda,"newRFM")
 setEnviromentVar(normal,tilda,"normal")
 output<- sprintf("%d;%d;%d;%d;%d;%d",min(newRFM$Recency),max(newRFM$Recency),min(newRFM$Frequency),max(newRFM$Frequency),min(newRFM$Monetary),max(newRFM$Monetary))
-#rm(list = ls())
 output
+#rm(list = ls())

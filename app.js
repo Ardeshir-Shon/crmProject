@@ -6,9 +6,11 @@ var formidable = require('formidable');
 var fs = require('fs')
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
+var arraylist = require("arraylist");
+var R = require("r-script");
+let ExplinCluster = require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
 var con = mysql.createConnection(config);
-
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -19,6 +21,19 @@ app.engine('handlebars', expressHandlebars({
         }
     }
 }));
+
+var clusterAnalysis = new arraylist;
+
+
+// var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(255,"این دسته از کاربران، کاربران وفادار و سود ده هستند که مدت کوتاهی است تراکنشی انجام نداده اند که زمان قابل توجهی نیست و بهتر است روی راضی نگه داتن آنها تمرکز کرد.");
+// clusterAnalysis.add(tempExplain)
+// var tempExplain=new ExplinCluster(145,"این دسته از کاربران، کاربران نسبتا وفادار هستند که البته سود بسیار خوبی داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+// clusterAnalysis.add(tempExplain);
+// var tempExplain=new ExplinCluster(154,"این دسته از کاربران، کاربران وفاداری هستند که سود نسبتا خوبی هم داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
+// clusterAnalysis.add(tempExplain);;
+
 
 app.use(bodyParser.json());
 
@@ -53,7 +68,6 @@ app.post('/upload', function(req, res) {
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
         console.log("uploaded.")
-        var R = require("r-script");
         var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
         var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
         console.log(out);
@@ -63,6 +77,24 @@ app.post('/upload', function(req, res) {
             var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
         } catch (err) {
             console.log("plots created ...")
+        }
+
+        try {
+            var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+        } catch (err) {
+            console.log("clusters evaluated ...")
+        }
+        var evaluateClusters = out;
+        var k = evaluateClusters.split(";")[0];
+        console.log(evaluateClusters);
+        console.log(k);
+        for (var i = 1; i <= k; i++) {
+            //console.log(evaluateClusters.split(";")[i])
+            var sql = "SELECT desc FROM type_desc WHERE type = '" + evaluateClusters.split(";")[i] + "'"
+            con.query(sql, function(err, result) {
+                if (err) throw err; // type not defined in DB
+                clusterAnalysis.add(JSON.parse(result[0].desc));
+            });
         }
         console.log(__dirname.replace(/\\/g, '/'))
             //console.log(JSON.parse(JSOout[0]));
@@ -143,7 +175,6 @@ app.listen(3000, function() {
 
 // var max = 12;
 // var min = 120;
-
 
 // module.exports.min = min;
 // module.exports.max = max;
