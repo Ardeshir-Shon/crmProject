@@ -1,3 +1,5 @@
+// import { type } from "os";
+
 var isDone;
 $('.upload-btn').on('click', function() {
     $('#upload-input').click();
@@ -109,7 +111,6 @@ $('#rangeSubmit').on('click', function() {
 
     $.ajax({
         url: "/RFMRange",
-        // datatype: 'jsonp',
         data: JSON.stringify(data),
         contentType: 'application/json',
         type: "POST",
@@ -122,27 +123,47 @@ $('#rangeSubmit').on('click', function() {
     });
 });
 
-
-$('#loginSubmit').on('click', function() {
+$('#signUpSubmit').on('click', function() {
     var user = {}
-    var email = $('#loginEmail').val();
-    var password = $('#loginPassword').val();
+    var name = $('#signUpName').val();
+    var email = $('#signUpEmail').val();
+    var password = $('#signUpPass1').val();
+    var rePassword = $('#signUpPass2').val();
 
-
+    user.name = name;
     user.email = email;
     user.password = password;
+    user.rePassword = rePassword;
 
     $.ajax({
-        url: "/login",
-        // datatype: 'jsonp',
+        url: "/",
         data: JSON.stringify(user),
         contentType: 'application/json',
         type: "POST",
         success: (data) => {
             console.log("success")
             console.log(JSON.stringify(user));
-            $("#nextOfRange").show();
-            // outputs "SUCESSSSS"
+            console.log(typeof JSON.stringify(user.password));
+        }
+    });
+});
+
+$('#loginSubmit').on('click', function() {
+    var user = {}
+    var email = $('#loginEmail').val();
+    var password = $('#loginPassword').val();
+
+    user.email = email;
+    user.password = password;
+
+    $.ajax({
+        url: "/login",
+        data: JSON.stringify(user),
+        contentType: 'application/json',
+        type: "POST",
+        success: (data) => {
+            console.log("success")
+            console.log(JSON.stringify(user));
         }
     });
 });
