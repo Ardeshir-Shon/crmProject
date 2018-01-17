@@ -10,17 +10,14 @@ setEnviromentVar <- function(data,tilda,name){
 getOctet <- function(number,col){
   if(number<=col[floor(length(col)/8)])
     return(1)
-  else if(number<=col[floor(3*length(col)/8)])
+  else if(number<=col[floor(4*length(col)/8)])
     return(2)
-  else if(number<=col[floor(5*length(col)/8)])
-    return(3)
   else if(number<=col[floor(7*length(col)/8)])
-    return(4)
-  else
-    return(5)
+    return(3)
+  return(4)
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
+tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
 
 newRFMClustered <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
 newRFM <- newRFMClustered[,-5]
@@ -48,7 +45,7 @@ for (i in 1:k){
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Frequency)),newRFM[order(Frequency)]$Frequency)
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Monetary)),newRFM[order(Monetary)]$Monetary)
   temp <- newRFM[which(newRFM$Cluster==i),]
-  write.csv(data,sprintf("%s/public/classes/%d.csv",tilda,i),row.names = FALSE,col.names = names(temp))
+  write.csv(temp,sprintf("%s/public/classes/%d.csv",tilda,i),row.names = FALSE,col.names = names(temp))
 }
 output <- sprintf("%d",k)
 for(i in 1:k) output<- sprintf("%s;%d",output,desc[[i]])

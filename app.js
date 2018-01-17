@@ -78,22 +78,20 @@ app.post('/upload', function(req, res) {
             } catch (err) {
                 console.log("plots created ...")
             }
-
-            try {
-                var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            } catch (err) {
-                console.log("clusters evaluated ...")
-            }
+            var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            console.log("clusters evaluated ...")
             var evaluateClusters=out;
+            console.log(out);
             var k=evaluateClusters.split(";")[0];
             console.log(evaluateClusters);
             console.log(k);
+            console.log(evaluateClusters.split(";")[1]);
             for (var i=1;i<=k;i++){
                 //console.log(evaluateClusters.split(";")[i])
-                var sql = "SELECT desc FROM type_desc WHERE type = '" + evaluateClusters.split(";")[i] + "'"
+                var sql = "SELECT `desc` FROM class_desc WHERE type = '" + evaluateClusters.split(";")[i] + "';"
                 con.query(sql, function(err, result) {
                     if (err) throw err; // type not defined in DB
-                    clusterAnalysis.add(JSON.parse(result[0].desc));
+                    clusterAnalysis.add(JSON.parse(JSON.stringify(result[0].desc)));
                 });
             }
             console.log(__dirname.replace(/\\/g, '/'))
