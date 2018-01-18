@@ -146,7 +146,7 @@ $('#signUpSubmit').on('click', function() {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.location.href = "/process";
+                document.location.href = "/dashboard";
             }
         }
     });
@@ -170,8 +170,16 @@ $('#loginSubmit').on('click', function() {
                 $("#loginAlert").html(data.error);
                 $("#loginAlert").show();
             } else {
-                document.location.href = "/process";
+                document.location.href = "/dashboard";
             }
         }
     });
 });
+
+$('#newAnalysis').on('click', function() {
+    document.location.href = "/process";
+});
+
+// $('#lastAnalysis').on('click', function() {
+//     document.location.href = "/process";
+// });
