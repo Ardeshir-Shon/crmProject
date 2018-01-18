@@ -3,7 +3,7 @@ var path = require('path');
 var express = require('express');
 var app = express();
 var formidable = require('formidable');
-var fs = require('fs')
+var fs = require('fs');
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var arraylist = require("arraylist");
@@ -24,7 +24,6 @@ app.engine('handlebars', expressHandlebars({
 
 var clusterAnalysis = new arraylist;
 
-
 // var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
 // clusterAnalysis.add(tempExplain);
 // var tempExplain=new ExplinCluster(255,"این دسته از کاربران، کاربران وفادار و سود ده هستند که مدت کوتاهی است تراکنشی انجام نداده اند که زمان قابل توجهی نیست و بهتر است روی راضی نگه داتن آنها تمرکز کرد.");
@@ -32,24 +31,24 @@ var clusterAnalysis = new arraylist;
 // var tempExplain=new ExplinCluster(145,"این دسته از کاربران، کاربران نسبتا وفادار هستند که البته سود بسیار خوبی داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
 // clusterAnalysis.add(tempExplain);
 // var tempExplain=new ExplinCluster(154,"این دسته از کاربران، کاربران وفاداری هستند که سود نسبتا خوبی هم داده اند و البته به تازگی هم تراکنش انجام داده اند و به طور کلی جزء کاربران ارزشمند ما حساب میشوند.");
-// clusterAnalysis.add(tempExplain);;
-
+// clusterAnalysis.add(tempExplain);
 
 app.use(bodyParser.json());
 
 app.get('/process', function(req, res) {
-
     res.render(path.join(__dirname, 'views/index.handlebars'));
 });
 
 app.get('/', function(req, res) {
-
     res.render(path.join(__dirname, 'views/signup.handlebars'));
 });
 
 app.get('/login', function(req, res) {
-
     res.render(path.join(__dirname, 'views/login.handlebars'));
+});
+
+app.get('/dashboard', function(req, res) {
+    res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
 });
 
 app.post('/upload', function(req, res) {
@@ -110,10 +109,71 @@ app.post('/upload', function(req, res) {
     // res.sendfile(path.join(__dirname, "plots", "mr.html"));
 });
 
+app.post('/', function(req, res) {
+    var signUpRespond = {};
+    signUpRespond.error = "";
+
+    function errorSet(respond) {
+        signUpRespond.error = respond;
+        res.send(signUpRespond);
+    }
+
+    function respondhandling(whenDone) {
+        if (req.body.name !== "" && req.body.email !== "" && req.body.password !== "" && req.body.rePassword !== "") {
+            if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
+                if (req.body.password == req.body.rePassword) {
+                    var sql = "INSERT INTO users (name, email, password) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.password + "')";
+                    con.query(sql, function(err, result) {
+                        if (err) throw err;
+                        console.log("user inserted.");
+                        whenDone("you signed up.")
+                    });
+                } else {
+                    console.log("passwords doesn't match!")
+                    whenDone("رمز‌های عبور با یکدیگر تطابق ندارند.")
+                }
+            } else {
+                console.log("email input is not correct!");
+                whenDone("ایمیل وارد شده صحیح نیست.")
+            }
+        } else {
+            console.log("something is wrong!");
+            whenDone("حداقل یکی از ورودی‌ها را وارد نکرده‌اید.");
+        }
+    }
+    respondhandling(errorSet);
+});
+
 app.post('/login', function(req, res) {
 
-    res.send("the valuses is: " + req.body.email + " | " + req.body.password);
-    console.log(req.body.email)
+    var loginRespond = {};
+    loginRespond.error = "";
+
+    function errorSet(respond) {
+        loginRespond.error = respond;
+        res.send(loginRespond);
+    }
+
+    function respondhandling(whenDone) {
+        if (req.body.email !== "" && req.body.password !== "") {
+            if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
+                var sql = "SELECT * FROM users  WHERE email ='" + req.body.email + "' AND password ='" + req.body.password + "'";
+                con.query(sql, function(err, result) {
+                    if (err) throw err;
+                    if (typeof result[0] == 'undefined') {
+                        whenDone("ایمیلی با این پسورد در سیستم موجود نیست.");
+                    } else {
+                        whenDone("you logged in!");
+                    }
+                });
+            } else {
+                whenDone("ایمیل وارد شده صحیح نیست.");
+            }
+        } else {
+            whenDone("حداقل یکی از ورودی‌ها را وارد نکرده‌اید.");
+        }
+    }
+    respondhandling(errorSet);
 });
 
 app.post('/RFMParam', function(req, res) {
