@@ -136,5 +136,3 @@ app.listen(3000, function() {
 
 // module.exports.min = min;
 // module.exports.max = max;
-
-var con = mysql.createConnection(config);
