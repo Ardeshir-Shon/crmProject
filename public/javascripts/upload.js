@@ -10,7 +10,8 @@ $('.upload-btn').on('click', function() {
 $("#nextOfFile").hide();
 $("#nextOfParam").hide();
 $("#nextOfRange").hide();
-
+$("#loginAlert").hide();
+$("#signUpAlert").hide();
 
 $('#upload-input').on('change', function() {
 
@@ -141,9 +142,12 @@ $('#signUpSubmit').on('click', function() {
         contentType: 'application/json',
         type: "POST",
         success: (data) => {
-            console.log("success")
-            console.log(JSON.stringify(user));
-            console.log(typeof JSON.stringify(user.password));
+            if (data.error !== "you signed up.") {
+                $("#signUpAlert").html(data.error);
+                $("#signUpAlert").show();
+            } else {
+                document.location.href = "/process";
+            }
         }
     });
 });
@@ -162,8 +166,12 @@ $('#loginSubmit').on('click', function() {
         contentType: 'application/json',
         type: "POST",
         success: (data) => {
-            console.log("success")
-            console.log(JSON.stringify(user));
+            if (data.error !== "you logged in!") {
+                $("#loginAlert").html(data.error);
+                $("#loginAlert").show();
+            } else {
+                document.location.href = "/process";
+            }
         }
     });
 });
