@@ -13,7 +13,6 @@
 </head>
 
 <body>
-</body>
 <div class="container-fluid">
 <div class="form-horizontal" id="msform" >
     <fieldset>
@@ -23,28 +22,28 @@
     <div class="row" style="margin-top:20px; margin-bottom: 20px;">
         <label class="control-label col-sm-3" style="padding-bottom:10px;">نام:</label>
 	    <div class="col-sm-7">
-	        <input type="text" class="form-control" placeholder="نام خود را وارد کنید">
+	        <input type="text" id= "signUpName" class="form-control" placeholder="نام خود را وارد کنید">
         </div>
     </div>
 
     <div class="row" style="margin-top:20px; margin-bottom: 20px;">
         <label class="control-label col-sm-3" style="padding-bottom:10px;">ایمیل:</label>
 	    <div class="col-sm-7">
-	        <input type="text" class="form-control" placeholder="someone@somthing.com" style="text-align: left; direction: ltr;">
+	        <input type="text" id="signUpEmail" class="form-control" placeholder="someone@somthing.com" style="text-align: left; direction: ltr;">
         </div>
     </div>
 
     <div class="row" style="margin-top:20px; margin-bottom: 20px;">
         <label class="control-label col-sm-3" style="padding-bottom:10px;">رمز عبور:</label>
 	    <div class="col-sm-7">
-	        <input type="password" class="form-control" placeholder="Password" style="text-align: left; direction: ltr;"/>
+	        <input type="password" id="signUpPass1" class="form-control" placeholder="Password" style="text-align: left; direction: ltr;"/>
         </div>
     </div>
     
     <div class="row" style="margin-top:20px; margin-bottom: 20px;">
         <label class="control-label col-sm-3" style="padding-bottom:10px;">تکرار رمز عبور:</label>
 	    <div class="col-sm-7">
-	        <input type="password" class="form-control" placeholder="Password" style="text-align: left; direction: ltr;"/>
+	        <input type="password" id="signUpPass2" class="form-control" placeholder="Password" style="text-align: left; direction: ltr;"/>
         </div>
     </div>
 
@@ -52,7 +51,7 @@
 
     {{!-- <input type="text" name="phone" style= "width:40%; margin-top: 20px; margin-bottom: 20px;" placeholder="Phone" />
     <textarea name="address" placeholder="Address"></textarea> --}}
-    <button type="button" class="btn" style="width: 80px;
+    <button type="button" id= "signUpSubmit" class="btn" style="width: 80px;
     background: #27AE60;
     font-weight: bold;
     color: white;
@@ -63,4 +62,6 @@
     </fieldset>
     </div>
 </div>
+<script src="javascripts/upload.js"></script>
+</body>
 </html>
