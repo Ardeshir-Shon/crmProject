@@ -171,12 +171,7 @@ $('#loginSubmit').on('click', function() {
                 $("#loginAlert").html(data.error);
                 $("#loginAlert").show();
             } else {
-<<<<<<< HEAD
-
-                document.location.href = "/dashboard";
-=======
                 document.location.href = "/dashboard/" + data.idd.toString();
->>>>>>> fd9ddcbff30535feafa1315f00ea9ad01528afde
             }
         }
     });
