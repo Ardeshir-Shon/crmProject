@@ -171,6 +171,7 @@ $('#loginSubmit').on('click', function() {
                 $("#loginAlert").html(data.error);
                 $("#loginAlert").show();
             } else {
+
                 document.location.href = "/dashboard";
             }
         }
@@ -180,8 +181,3 @@ $('#loginSubmit').on('click', function() {
 $('#newAnalysis').on('click', function() {
     document.location.href = "/process";
 });
-
-
-// $('#lastAnalysis').on('click', function() {
-//     document.location.href = "/process";
-// });

@@ -46,7 +46,7 @@ app.get('/login', function(req, res) {
     res.render(path.join(__dirname, 'views/login.handlebars'));
 });
 
-app.get('/dashboard', function(req, res) {
+app.get('/dashboard/', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
 });
 
