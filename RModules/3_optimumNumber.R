@@ -16,7 +16,7 @@ testFun <- function(x){
   return(2*as.numeric(x$freq_type)+10*as.numeric(x$mone_type)+5*as.numeric(x$rec_type))
 }
 
-tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 newRFM <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
 normal <- getEnviromentVar(tilda,"normal") #pipeline passing enviroment

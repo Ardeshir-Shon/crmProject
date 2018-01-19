@@ -26,7 +26,7 @@ normalization <- function(dt){
   return(out)
 }
 
-tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 RFM <- getEnviromentVar(tilda,"rfm") #pipeline passing enviroment
 normal <- normalization(RFM)
