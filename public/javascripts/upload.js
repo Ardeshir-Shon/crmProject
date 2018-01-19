@@ -172,11 +172,30 @@ $('#loginSubmit').on('click', function() {
                 $("#loginAlert").show();
             } else {
                 document.location.href = "/dashboard/" + data.idd.toString();
+                document.cookie="userID="+data.idd.toString();
             }
         }
     });
 });
 
 $('#newAnalysis').on('click', function() {
-    document.location.href = "/process";
+    document.location.href = "/process/"+getCookie("userID");
+    // document.location.href = "/process";
 });
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie =document.cookie; //decodeURIComponent(document.cookie);
+    // decodedCookie = name;
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}

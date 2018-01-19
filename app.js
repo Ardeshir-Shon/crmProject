@@ -36,8 +36,9 @@ app.engine('handlebars', expressHandlebars({
 
 app.use(bodyParser.json());
 
-app.get('/process', function(req, res) {
+app.get('/process/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/index.handlebars'));
+    //console.log(req.params.id)
 });
 
 app.get('/', function(req, res) {
