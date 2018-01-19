@@ -141,6 +141,7 @@ app.post('/login', function(req, res) {
     }
 
     function respondhandling(whenDone) {
+        var idOfUser = "";
         if (req.body.email !== "" && req.body.password !== "") {
             if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
                 var sql = "SELECT * FROM users  WHERE email ='" + req.body.email + "' AND password ='" + req.body.password + "'";
@@ -150,6 +151,11 @@ app.post('/login', function(req, res) {
                         whenDone("ایمیلی با این پسورد در سیستم موجود نیست.");
                     } else {
                         whenDone("you logged in!");
+                        var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
+                        con.query(sqlGetId, function(err, result) {
+                            if (err) throw err; // type not defined in DB
+                            // let p1 = new Promise
+                        });
                     }
                 });
             } else {
