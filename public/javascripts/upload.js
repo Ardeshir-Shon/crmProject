@@ -147,7 +147,7 @@ $('#signUpSubmit').on('click', function() {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.location.href = "/dashboard";
+                document.location.href = "/process";
             }
         }
     });
