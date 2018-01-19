@@ -1,5 +1,3 @@
-// import { type } from "os";
-
 var isDone;
 $('.upload-btn').on('click', function() {
     $('#upload-input').click();
@@ -12,6 +10,7 @@ $("#nextOfParam").hide();
 $("#nextOfRange").hide();
 $("#loginAlert").hide();
 $("#signUpAlert").hide();
+$("#results").hide();
 
 $('#upload-input').on('change', function() {
 
@@ -59,13 +58,9 @@ $('#upload-input').on('change', function() {
                         if (percentComplete === 100) {
                             $('.progress-bar').html('<i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp  بارگذاری شد');
                             isDone = true;
-                            console.log("isDone is : " + isDone);
                             $("#nextOfFile").show();
-
                         }
-
                     }
-
                 }, false);
                 return xhr;
             }
@@ -73,8 +68,7 @@ $('#upload-input').on('change', function() {
     }
 });
 
-$('#paramSubmit').on('click', function() {
-    // $(this).hide();
+$('#paramSubmit').one('click', function() {
     var data = {}
     var R = $('#RParam').val();
     var F = $('#FParam').val();
@@ -84,18 +78,26 @@ $('#paramSubmit').on('click', function() {
     data.F = F;
     data.M = M;
 
-    // var a = JSON.stringify(a);
     $.ajax({
         url: "/RFMParam",
-        // datatype: 'jsonp',
         data: JSON.stringify(data),
         contentType: 'application/json',
         type: "POST",
         success: (data) => {
-            console.log("success")
-            console.log(JSON.stringify(data));
             $("#nextOfParam").show();
-            // outputs "SUCESSSSS"
+            data = data.reverse();
+            dataStr = data.toString()
+            console.log("reverse dataStr is: " + dataStr);
+            dataArray = dataStr.split(",");
+            var element = $("#results");
+            for (i = 0; i < dataArray.length; i++) {
+                var id = "desc" + i;
+                var stringId = "#" + id;
+                element.clone().attr("id", id).insertAfter(element).show();
+                $(stringId).find("#clusterText").text(dataArray[i]);
+                $(stringId).find("#download").attr("href", "/download/" + (dataArray.length - i));
+
+            }
         }
     });
 });
@@ -116,10 +118,9 @@ $('#rangeSubmit').on('click', function() {
         contentType: 'application/json',
         type: "POST",
         success: (data) => {
-            console.log("success")
-            console.log(JSON.stringify(data));
+            // console.log("success")
+            // console.log(JSON.stringify(data));
             $("#nextOfRange").show();
-            // outputs "SUCESSSSS"
         }
     });
 });
@@ -146,7 +147,7 @@ $('#signUpSubmit').on('click', function() {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.location.href = "/process";
+                document.location.href = "/dashboard";
             }
         }
     });
@@ -170,8 +171,17 @@ $('#loginSubmit').on('click', function() {
                 $("#loginAlert").html(data.error);
                 $("#loginAlert").show();
             } else {
-                document.location.href = "/process";
+                document.location.href = "/dashboard";
             }
         }
     });
 });
+
+$('#newAnalysis').on('click', function() {
+    document.location.href = "/process";
+});
+
+
+// $('#lastAnalysis').on('click', function() {
+//     document.location.href = "/process";
+// });

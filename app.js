@@ -22,7 +22,6 @@ app.engine('handlebars', expressHandlebars({
     }
 }));
 
-var clusterAnalysis = new arraylist;
 
 // var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
 // clusterAnalysis.add(tempExplain);
@@ -51,6 +50,11 @@ app.get('/dashboard', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
 });
 
+app.get('/download/:id', function(req, res) {
+    var file = path.join(__dirname, 'public/classes/' + req.params.id + '.csv')
+    res.download(file);
+});
+
 app.post('/upload', function(req, res) {
 
     // create an incoming form object
@@ -77,25 +81,7 @@ app.post('/upload', function(req, res) {
         } catch (err) {
             console.log("plots created ...")
         }
-        var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        console.log("clusters evaluated ...")
-        var evaluateClusters = out;
-        console.log(out);
-        var k = evaluateClusters.split(";")[0];
-        console.log(evaluateClusters);
-        console.log(k);
-        console.log(evaluateClusters.split(";")[1]);
-        for (var i = 1; i <= k; i++) {
-            //console.log(evaluateClusters.split(";")[i])
-            var sql = "SELECT `desc` FROM class_desc WHERE type = '" + evaluateClusters.split(";")[i] + "';"
-            con.query(sql, function(err, result) {
-                if (err) throw err; // type not defined in DB
-                clusterAnalysis.add(JSON.parse(JSON.stringify(result[0].desc)));
-            });
-        }
-        console.log(__dirname.replace(/\\/g, '/'))
-            //console.log(JSON.parse(JSOout[0]));
-        res.end('success');
+        res.end("success");
     });
 
     // log any errors that occur
@@ -177,15 +163,44 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-    res.send("the valuses is: " + req.body.R + req.body.F + req.body.M);
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+    console.log("clusters evaluated ...")
+    var clusterAnalysis = new arraylist;
+    var promises = [];
+    var evaluateClusters = out;
+    console.log(evaluateClusters);
+    var k = evaluateClusters.split(";")[0];
+    for (var i = 1; i <= k; i++) {
+        promises.push(clustersEvaluate(i));
+    }
+
+    function clustersEvaluate(idx) {
+
+        return new Promise(function(resolve, reject) {
+            var sql = "SELECT `desc` FROM class_desc WHERE type = '" + evaluateClusters.split(";")[idx] + "';"
+            con.query(sql, function(err, result) {
+                if (err) throw err; // type not defined in DB
+                resolve(clusterAnalysis.add(JSON.parse(JSON.stringify(result[0].desc))));
+            });
+        });
+    }
+    console.log(__dirname.replace(/\\/g, '/'))
+    Promise.all(promises).then(() => {
+        res.send(clusterAnalysis)
+    });
+
 });
 
 app.post('/RFMRange', function(req, res) {
 
     res.send("the valuses is: " + req.body.rRange + req.body.fRange + req.body.mRange);
-    // shit(req);
 });
 
 app.listen(3000, function() {
     console.log("Working on port 3000");
 });
+
+//var dateTime = require('node-datetime');
+// var dt = dateTime.create();
+// var formatted = dt.format('Y-m-d H:M:S');
+// console.log(formatted);
