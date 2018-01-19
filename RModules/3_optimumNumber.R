@@ -16,13 +16,13 @@ testFun <- function(x){
   return(2*as.numeric(x$freq_type)+10*as.numeric(x$mone_type)+5*as.numeric(x$rec_type))
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
+tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
 
 newRFM <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
 normal <- getEnviromentVar(tilda,"normal") #pipeline passing enviroment
 wss <- (nrow(newRFM)-1)*sum(apply(newRFM,2,var))
 for (i in 2:20) wss[i] <- sum(kmeans(newRFM,
-                                     centers=i)$withinss)
+                                     centers=i,nstart = 3)$withinss)
 scaledWSS <- scale(wss)
 k <- 0
 for(i in 1:19){
@@ -31,7 +31,7 @@ for(i in 1:19){
     break;
   }
 }
-segUsers<- kmeans(normal[,-1],centers = k)
+segUsers<- kmeans(normal[,-1],centers = k,nstart = 3)
 newRFM <- data.table(newRFM,Cluster=segUsers$cluster)
 normal <- data.table(normal,Cluster=segUsers$cluster)
 #groupMean(newRFM[,-1],newRFM$Cluster)

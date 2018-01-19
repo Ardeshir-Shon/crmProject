@@ -24,7 +24,7 @@ newRFM <- newRFMClustered[,-5]
 
 wss <- (nrow(newRFM)-1)*sum(apply(newRFM,2,var))
 for (i in 2:20) wss[i] <- sum(kmeans(newRFM,
-                                     centers=i)$withinss)
+                                     centers=i,nstart = 3)$withinss)
 scaledWSS <- scale(wss)
 k <- 0
 for(i in 1:19){

@@ -22,7 +22,7 @@ extractRFM <- function(transaction_list){
   )
 }
 
-tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
+tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
 dir.create(sprintf("%s/RModules/dataHolder",tilda))
 transactions <- fread(file=sprintf("%s/trans-df.csv",tilda),header = TRUE)
 transactions <- transactions[order(userID)]
