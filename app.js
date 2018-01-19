@@ -46,8 +46,9 @@ app.get('/login', function(req, res) {
     res.render(path.join(__dirname, 'views/login.handlebars'));
 });
 
-app.get('/dashboard', function(req, res) {
+app.get('/dashboard/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
+    console.log("user id is: " + req.params.id);
 });
 
 app.get('/download/:id', function(req, res) {
@@ -134,9 +135,11 @@ app.post('/login', function(req, res) {
 
     var loginRespond = {};
     loginRespond.error = "";
+    loginRespond.id;
 
-    function errorSet(respond) {
+    function errorSet(respond,id) {
         loginRespond.error = respond;
+        loginRespond.id=id;
         res.send(loginRespond);
     }
 
@@ -150,11 +153,15 @@ app.post('/login', function(req, res) {
                     if (typeof result[0] == 'undefined') {
                         whenDone("ایمیلی با این پسورد در سیستم موجود نیست.");
                     } else {
-                        whenDone("you logged in!");
-                        var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
-                        con.query(sqlGetId, function(err, result) {
-                            if (err) throw err; // type not defined in DB
-                            // let p1 = new Promise
+                        let p1=new Promise(function (resolve,reject) {
+                            var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
+                            con.query(sqlGetId, function(err, result) {
+                                if (err) throw err; // type not defined in DB
+                                resolve(idOfUser=JSON.parse(JSON.stringify(result[0].id)));
+                            });
+                        });
+                        p1.then(() =>{
+                            whenDone("you logged in!",idOfUser);
                         });
                     }
                 });
