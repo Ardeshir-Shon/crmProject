@@ -17,7 +17,7 @@ getOctet <- function(number,col){
   return(4)
 }
 
-tilda="C:/Users/user/IdeaProjects/crmProject"#input[[1]]#
+tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 newRFMClustered <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
 newRFM <- newRFMClustered[,-5]
