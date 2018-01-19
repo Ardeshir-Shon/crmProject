@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var arraylist = require("arraylist");
 var R = require("r-script");
+var CryptoJS = require("crypto-js");
 let ExplinCluster = require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
 var con = mysql.createConnection(config);
@@ -21,6 +22,7 @@ app.engine('handlebars', expressHandlebars({
         }
     }
 }));
+
 
 
 // var tempExplain=new ExplinCluster(155,"این دسته از کاربران کاربران وفادار و پر سود ده هستند که از همه نظر بهترین و ارزشمند ترین کابران ما هستند و باید آنها را راضی نگه داشت.");
@@ -48,7 +50,18 @@ app.get('/login', function(req, res) {
 
 app.get('/dashboard/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
-    console.log("user id is: " + req.params.id);
+    //console.log("user id is: " + CryptoJS.AES.decrypt( req.params.id,"Secret Passphrase"));
+    // var bytes=CryptoJS.AES.decrypt(req.params.id,'secret key 123');
+    // console.log(JSON.parse(bytes.toString(CryptoJS.enc.Utf8)))
+    console.log(decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase")))
+    var idPadded=decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase"));
+    var idG="";
+    for (var i=1;i<idPadded.length;i+=2){
+        idG=idG+idPadded.charAt(i);
+    }
+    idG=parseInt(idG,10);
+    console.log(idG);
+    console.log(typeof idG);
 });
 
 app.get('/download/:id', function(req, res) {
@@ -135,16 +148,16 @@ app.post('/login', function(req, res) {
 
     var loginRespond = {};
     loginRespond.error = "";
-    loginRespond.id;
+    loginRespond.idd="";
 
-    function errorSet(respond,id) {
+    function errorSet(respond,id_in) {
         loginRespond.error = respond;
-        loginRespond.id=id;
+        loginRespond.idd=id_in;
         res.send(loginRespond);
     }
 
     function respondhandling(whenDone) {
-        var idOfUser = "";
+        var idOfUser;
         if (req.body.email !== "" && req.body.password !== "") {
             if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
                 var sql = "SELECT * FROM users  WHERE email ='" + req.body.email + "' AND password ='" + req.body.password + "'";
@@ -157,11 +170,15 @@ app.post('/login', function(req, res) {
                             var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
                             con.query(sqlGetId, function(err, result) {
                                 if (err) throw err; // type not defined in DB
-                                resolve(idOfUser=JSON.parse(JSON.stringify(result[0].id)));
+                                //CryptoJS.AES.encrypt(3,"Secret Passphrase")
+                                resolve(idOfUser=JSON.stringify(result[0].id));
                             });
                         });
                         p1.then(() =>{
-                            whenDone("you logged in!",idOfUser);
+                            //CryptoJS.AES.encrypt("my message", 'secret key 123')
+                            whenDone("you logged in!",encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            console.log(idOfUser);
+                            console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                         });
                     }
                 });

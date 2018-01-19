@@ -6,6 +6,7 @@
   "dependencies": {
     "arraylist": "^0.1.0",
     "body-parser": "^1.18.2",
+    "crypto-js": "^3.1.9-1",
     "dataframe-js": "^1.2.6",
     "express": "^4.16.2",
     "express-generator": "^4.15.5",
