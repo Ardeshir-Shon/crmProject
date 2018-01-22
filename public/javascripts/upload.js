@@ -30,7 +30,7 @@ $('#upload-input').on('change', function() {
         }
 
         $.ajax({
-            url: '/upload',
+            url: '/upload/'+getCookie("userID"),
             type: 'POST',
             data: formData,
             processData: false,
@@ -125,7 +125,7 @@ $('#rangeSubmit').on('click', function() {
     });
 });
 
-$('#signUpSubmit').on('click', function() {
+$('#signUpSubmit').on('click', function(data) {
     var user = {}
     var name = $('#signUpName').val();
     var email = $('#signUpEmail').val();
@@ -147,7 +147,8 @@ $('#signUpSubmit').on('click', function() {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.location.href = "/process";
+                document.cookie="userID="+data.id.toString();
+                document.location.href = "/process/"+ data.id.toString();
             }
         }
     });

@@ -9,6 +9,7 @@ var mysql = require('mysql');
 var arraylist = require("arraylist");
 var R = require("r-script");
 var CryptoJS = require("crypto-js");
+var dateTime = require('node-datetime');
 let ExplinCluster = require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
 var con = mysql.createConnection(config);
@@ -36,9 +37,19 @@ app.engine('handlebars', expressHandlebars({
 
 app.use(bodyParser.json());
 
+function myDecode(encoded) {
+    var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(encoded, "Secret Passphrase"));
+    var idG = "";
+    for (var i = 1; i < idPadded.length; i += 2) {
+        idG = idG + idPadded.charAt(i);
+    }
+    return parseInt(idG, 10);
+}
+
 app.get('/process/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/index.handlebars'));
     //console.log(req.params.id)
+    var id=myDecode(req.params.id);
 });
 
 app.get('/', function(req, res) {
@@ -51,16 +62,13 @@ app.get('/login', function(req, res) {
 
 app.get('/dashboard/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
-    //console.log("user id is: " + CryptoJS.AES.decrypt( req.params.id,"Secret Passphrase"));
-    // var bytes=CryptoJS.AES.decrypt(req.params.id,'secret key 123');
-    // console.log(JSON.parse(bytes.toString(CryptoJS.enc.Utf8)))
     console.log(decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase")))
-    var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase"));
-    var idG = "";
-    for (var i = 1; i < idPadded.length; i += 2) {
-        idG = idG + idPadded.charAt(i);
-    }
-    idG = parseInt(idG, 10);
+    // var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase"));
+    // var idG = "";
+    // for (var i = 1; i < idPadded.length; i += 2) {
+    //     idG = idG + idPadded.charAt(i);
+    // }
+    var idG = myDecode(req.params.id);//parseInt(idG, 10);
     console.log(idG);
     console.log(typeof idG);
 });
@@ -70,7 +78,7 @@ app.get('/download/:id', function(req, res) {
     res.download(file);
 });
 
-app.post('/upload', function(req, res) {
+app.post('/upload/:id', function(req, res) {
 
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -79,24 +87,44 @@ app.post('/upload', function(req, res) {
     form.multiples = true;
 
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, '/');
+    form.uploadDir = path.join(__dirname, '/public/uploaded/');
 
+    if (!fs.existsSync(form.uploadDir)) {
+        fs.mkdirSync(form.uploadDir);
+    }
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
-        fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
-        console.log("uploaded.")
-        var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        console.log(out);
-        minMaxValues = out;
-        console.log(minMaxValues.split(";")[3]) // 3 is max of F as you can understand
-        try {
-            var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        } catch (err) {
-            console.log("plots created ...")
-        }
-        res.end("success");
+        let p1= new Promise(function (resolve,reject) {
+            var i=0;
+            var dir = path.join(form.uploadDir, "trans-df"+i+".csv");
+            while(fs.existsSync(dir))
+            {
+                i++;
+                dir = path.join(form.uploadDir, "trans-df"+i+".csv");
+            }
+            fs.rename(file.path, dir);
+            console.log("uploaded.")
+            var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            console.log(out);
+            minMaxValues = out;
+            console.log(minMaxValues.split(";")[3]) // 3 is max of F as you can understand
+            try {
+                var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            } catch (err) {
+                console.log("plots created ...")
+            }
+            resolve();
+        });
+        // let p2=new Promise(function (resolve,reject) {
+        //     var id=myDecode(req.params.id);
+        //
+        //
+        // });
+        p1.then(() =>{
+            res.end("success");
+        })
     });
 
     // log any errors that occur
@@ -113,21 +141,41 @@ app.post('/upload', function(req, res) {
 app.post('/', function(req, res) {
     var signUpRespond = {};
     signUpRespond.error = "";
+    signUpRespond.id="";
 
-    function errorSet(respond) {
+    function errorSet(respond,id) {
         signUpRespond.error = respond;
+        signUpRespond.id=id;
         res.send(signUpRespond);
     }
 
     function respondhandling(whenDone) {
+        var idOfUser;
         if (req.body.name !== "" && req.body.email !== "" && req.body.password !== "" && req.body.rePassword !== "") {
             if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
                 if (req.body.password == req.body.rePassword) {
                     var sql = "INSERT INTO users (name, email, password) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.password + "')";
                     con.query(sql, function(err, result) {
-                        if (err) throw err;
-                        console.log("user inserted.");
-                        whenDone("you signed up.")
+                        if (err) {
+                            console.log("nashod dge!");
+                            whenDone('حساب کاربری دیگری با این پست الکترونیک قبلاً ثبت نام کرده است.');
+                        }
+                        else
+                        {
+                            let p1 = new Promise(function(resolve, reject) {
+                                var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
+                                con.query(sqlGetId, function(err, result) {
+                                    if (err) throw err; // type not defined in DB
+                                    resolve(idOfUser = JSON.stringify(result[0].id));
+                                });
+                            });
+                            p1.then(() => {
+                                whenDone("you signed up.", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                                console.log("user inserted.");
+                                console.log(idOfUser);
+                                console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            });
+                        }
                     });
                 } else {
                     console.log("passwords doesn't match!")
@@ -171,12 +219,10 @@ app.post('/login', function(req, res) {
                             var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
                             con.query(sqlGetId, function(err, result) {
                                 if (err) throw err; // type not defined in DB
-                                //CryptoJS.AES.encrypt(3,"Secret Passphrase")
                                 resolve(idOfUser = JSON.stringify(result[0].id));
                             });
                         });
                         p1.then(() => {
-                            //CryptoJS.AES.encrypt("my message", 'secret key 123')
                             whenDone("you logged in!", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                             console.log(idOfUser);
                             console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
