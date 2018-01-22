@@ -283,7 +283,6 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-    req.params.
     var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
