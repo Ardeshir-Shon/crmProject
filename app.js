@@ -50,6 +50,7 @@ app.get('/process/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/index.handlebars'));
     //console.log(req.params.id)
     var id=myDecode(req.params.id);
+    console.log("id is:"+id);
 });
 
 app.get('/', function(req, res) {
@@ -78,7 +79,7 @@ app.get('/download/:id', function(req, res) {
     res.download(file);
 });
 
-app.post('/upload/:id', function(req, res) {
+app.post('/upload/:id', function(req, res){
 
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -92,20 +93,24 @@ app.post('/upload/:id', function(req, res) {
     if (!fs.existsSync(form.uploadDir)) {
         fs.mkdirSync(form.uploadDir);
     }
+    var finalPath="";
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
+        var id=myDecode(req.params.id);
+        console.log(id);
+        var tid="";
         let p1= new Promise(function (resolve,reject) {
             var i=0;
-            var dir = path.join(form.uploadDir, "trans-df"+i+".csv");
-            while(fs.existsSync(dir))
+            finalPath = path.join(form.uploadDir, "trans-df"+i+".csv");
+            while(fs.existsSync(finalPath))
             {
                 i++;
-                dir = path.join(form.uploadDir, "trans-df"+i+".csv");
+                finalPath = path.join(form.uploadDir, "trans-df"+i+".csv").replace(/\\/g, '/');
             }
-            fs.rename(file.path, dir);
+            fs.rename(file.path, finalPath);
             console.log("uploaded.")
-            var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/'),finalPath).callSync();
             var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
             console.log(out);
             minMaxValues = out;
@@ -117,14 +122,52 @@ app.post('/upload/:id', function(req, res) {
             }
             resolve();
         });
-        // let p2=new Promise(function (resolve,reject) {
-        //     var id=myDecode(req.params.id);
-        //
-        //
-        // });
+        let p2=new Promise(function (resolve,reject) {
+
+            //let p1=new Promise(function (resolve,reject){
+                var dt = dateTime.create();
+                var formatted = dt.format('Y-m-d H:M:S');
+                console.log(finalPath);
+                console.log(formatted);
+                var sqlQuery= "INSERT INTO crm.transactions (input_file,t_date) VALUES('"+finalPath+"','"+formatted+"');";
+                con.query(sqlQuery,function (err,result) {
+                   if (err) console.log("can not insert transaction");
+                   else {
+                       con.query("SELECT LAST_INSERT_ID() AS lastinsert",function (err,result) {
+                           tid=JSON.stringify(result[0].lastinsert);
+                           console.log("tid is:"+tid+typeof tid);
+                           if (err) console.log("did not mine tid");
+                           else{
+                               var sqlQuery= "INSERT INTO crm.user_transactions (uid,tid) VALUES('"+id+"','"+tid+"');";
+                               con.query(sqlQuery,function (err,result) {
+                                   if (err) console.log("user transaction did not added");
+                                   else
+                                       resolve();
+                               })
+                           }
+                       })
+                   }
+                });
+            //});
+            // p1.then(()=>{
+            //     console.log("sql jobs done");
+            //     resolve();
+            // })
+        });
         p1.then(() =>{
-            res.end("success");
-        })
+            console.log("p1 done");
+            p2.then(()=>{
+                console.log("p2 done")
+                var pathTid={};
+                console.log(finalPath+" "+tid);
+                encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(finalPath, "Secret Passphrase").toString())
+                pathTid.path=encodeURIComponent(finalPath);
+                pathTid.tid=encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(tid, "Secret Passphrase").toString());
+                console.log(pathTid.path+" "+pathTid.tid);
+                console.log(decodeURIComponent(pathTid.path)+" "+myDecode(pathTid.tid))
+                res.send(pathTid);
+            });
+        });
     });
 
     // log any errors that occur
@@ -240,6 +283,7 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
+    req.params.
     var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;

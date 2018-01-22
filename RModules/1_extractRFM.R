@@ -24,7 +24,7 @@ extractRFM <- function(transaction_list){
 
 tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 dir.create(sprintf("%s/RModules/dataHolder",tilda))
-transactions <- fread(file=sprintf("%s/trans-df.csv",tilda),header = TRUE)
+transactions <- fread(file=sprintf("%s",input[[2]]),header = TRUE)
 transactions <- transactions[order(userID)]
 RFM <- extractRFM(transactions)
 RFM <- setnames(RFM,c("userID","N"),c("User","Frequency"))

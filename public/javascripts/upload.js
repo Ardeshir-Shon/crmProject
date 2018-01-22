@@ -36,7 +36,10 @@ $('#upload-input').on('change', function() {
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log('upload successful!\n' + data);
+                console.log('upload successful!\n' + data.path+" "+data.tid);
+                document.cookie="path="+data.path+"; path=/";
+                document.cookie="tid="+data.tid+"; path=/";
+
             },
             xhr: function() {
                 // create an XMLHttpRequest
