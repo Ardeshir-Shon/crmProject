@@ -115,11 +115,11 @@ app.post('/upload/:id', function(req, res){
             console.log(out);
             minMaxValues = out;
             console.log(minMaxValues.split(";")[3]) // 3 is max of F as you can understand
-            try {
-                var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
-            } catch (err) {
-                console.log("plots created ...")
-            }
+            // try {
+            //     var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // } catch (err) {
+            //     console.log("plots created ...")
+            // }
             resolve();
         });
         let p2=new Promise(function (resolve,reject) {
@@ -283,7 +283,17 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+    // if (req.params.tid != "undefined")
+    //     var tid=myDecode(req.params.tid);
+    // else
+        //console.log(req.params.tid+" is not defined");
+    try {
+
+        var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/'),req.params.R,req.params.F,req.params.M).callSync();
+    } catch (err) {
+        console.log("plots created ...")
+    }
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'),req.params.R,req.params.F,req.params.M).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
     var promises = [];
@@ -306,6 +316,29 @@ app.post('/RFMParam', function(req, res) {
     }
     console.log(__dirname.replace(/\\/g, '/'))
     Promise.all(promises).then(() => {
+        //console.log("tid is:"+tid);
+        destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
+
+        if (!fs.existsSync(destAddr)) {
+            fs.mkdirSync(destAddr);
+        }
+        var finalPath="";
+        var i=0;
+        var namae="class"+i+".csv";
+        finalPath = path.join(destAddr,namae ).replace(/\\/g, '/');
+        while(fs.existsSync("1"+finalPath))
+        {
+            i++;
+            namae="class"+i+".csv";
+            finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
+        }
+        var srcAddress=path.join(__dirname, 'public/classes/').replace(/\\/g, '/');
+        console.log(srcAddress+"../");
+        for (var c=1;c<=clusterAnalysis.length;c++){
+            fs.copyFileSync(srcAddress+c+".csv",destAddr+c+namae);
+            //fs.renameSync(destAddr+c+".csv",c+finalPath);
+        }
+        console.log("uploaded.")
         res.send(clusterAnalysis)
     });
 

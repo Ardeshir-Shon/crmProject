@@ -80,6 +80,8 @@ $('#paramSubmit').one('click', function() {
     data.R = R;
     data.F = F;
     data.M = M;
+    data.tid=getCookie("tid");
+    console.log("tid is sending:"+getCookie("tid"));
 
     $.ajax({
         url: "/RFMParam",
