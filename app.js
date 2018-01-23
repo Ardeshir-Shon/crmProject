@@ -108,7 +108,7 @@ app.post('/upload/:id', function(req, res){
                 i++;
                 finalPath = path.join(form.uploadDir, "trans-df"+i+".csv").replace(/\\/g, '/');
             }
-            fs.rename(file.path, finalPath);
+            fs.renameSync(file.path, finalPath);
             console.log("uploaded.")
             var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/'),finalPath).callSync();
             var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
