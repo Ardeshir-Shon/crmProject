@@ -288,9 +288,10 @@ h2 {
 /* When the body has the loading class, we turn
    the scrollbar off with overflow:hidden */
 
-body.loading {
+
+/* body.loading {
     overflow: hidden;
-}
+} */
 
 
 /* Anytime the body has the loading class, our
