@@ -43,7 +43,8 @@ function myDecode(encoded) {
     for (var i = 1; i < idPadded.length; i += 2) {
         idG = idG + idPadded.charAt(i);
     }
-    return idG;
+    //return idG;
+    return encoded;
 }
 
 app.get('/process/:id', function(req, res) {
@@ -70,7 +71,7 @@ app.get('/dashboard/:id', function(req, res) {
         //     idG = idG + idPadded.charAt(i);
         // }
     var idG = myDecode(req.params.id); //parseInt(idG, 10);
-    // console.log("type "idG);
+    console.log("idg in dashboard: "+idG);
     console.log(typeof idG);
 });
 
@@ -156,15 +157,23 @@ app.post('/upload/:id', function(req, res) {
         p1.then(() => {
             console.log("p1 done");
             p2.then(() => {
-                console.log("p2 done")
                 var pathTid = {};
-                console.log(finalPath + " " + tid);
-                encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(finalPath, "Secret Passphrase").toString())
-                pathTid.path = encodeURIComponent(finalPath);
-                pathTid.tid = encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(tid, "Secret Passphrase").toString());
-                console.log(pathTid.path + " " + pathTid.tid);
-                console.log(decodeURIComponent(pathTid.path) + " " + myDecode(pathTid.tid))
-                res.send(pathTid);
+                let p1=new Promise(function (resolve,reject) {
+                    resolve(pathTid.path = encodeURIComponent(finalPath),pathTid.tid=tid);
+                    //resolve(pathTid.path = encodeURIComponent(finalPath),pathTid.tid=encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(tid, "Secret Passphrase").toString()));
+                });
+                let p2=new Promise(function (resolve,reject) {
+                    resolve(res.send(pathTid));
+                });
+                p1.then(()=>{
+                    p2.then(()=>{
+                        console.log("before encode:"+finalPath + " " + tid);
+                        //encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(finalPath, "Secret Passphrase").toString())
+                        //console.log("after encode:"+pathTid.path + " " + pathTid.tid);
+                        //console.log("after decode"+decodeURIComponent(pathTid.path) + " " + myDecode(pathTid.tid))
+                    })
+                })
+
             });
         });
     });
@@ -210,10 +219,11 @@ app.post('/', function(req, res) {
                                 });
                             });
                             p1.then(() => {
-                                whenDone("you signed up.", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                                //whenDone("you signed up.", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                                whenDone("you signed up.",idOfUser);
                                 console.log("user inserted.");
                                 console.log(idOfUser);
-                                console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                                //console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                             });
                         }
                     });
@@ -263,9 +273,10 @@ app.post('/login', function(req, res) {
                             });
                         });
                         p1.then(() => {
-                            whenDone("you logged in!", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            //whenDone("you logged in!", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            whenDone("you logged in!",idOfUser);
                             console.log(idOfUser);
-                            console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            //console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                         });
                     }
                 });
@@ -291,7 +302,7 @@ app.post('/RFMParam', function(req, res) {
     } catch (err) {
         console.log("plots created ...")
     }
-    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'),req.body.tid).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
     var promises = [];
@@ -312,31 +323,52 @@ app.post('/RFMParam', function(req, res) {
             });
         });
     }
-    console.log(__dirname.replace(/\\/g, '/'))
-    console.log("tid is:" + myDecode(req.body.tid) + "and before myDecode:" + req.body.tid);
-    Promise.all(promises).then(() => {
-        destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
 
-        if (!fs.existsSync(destAddr)) {
-            fs.mkdirSync(destAddr);
-        }
-        var finalPath = "";
-        var i = 0;
-        var namae = "class" + i + ".csv";
-        finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
-        while (fs.existsSync("1" + finalPath)) {
-            i++;
-            namae = "class" + i + ".csv";
-            finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
-        }
-        var srcAddress = path.join(__dirname, 'public/classes/').replace(/\\/g, '/');
-        console.log(srcAddress + "../");
-        for (var c = 1; c <= clusterAnalysis.length; c++) {
-            fs.copyFileSync(srcAddress + c + ".csv", destAddr + c + namae);
-            //fs.renameSync(destAddr+c+".csv",c+finalPath);
-        }
-        console.log("uploaded.")
-        res.send(clusterAnalysis)
+    var promises2 = [];
+    for (var j = 1; j <= k; j++) {
+        promises.push(addOutputs(j));
+    }
+
+    function addOutputs(idx) {
+        return new Promise(function (resolve,reject) {
+            var sql="INSERT INTO crm.outputs(tid,type_class,o_file) VALUES('"+req.body.tid+"','"+evaluateClusters.split(";")[idx]+"','"+__dirname.replace(/\\/g, '/')+"/public/classes/"+idx+"cluster"+req.body.tid+".csv');";
+            con.query(sql,function (err,result) {
+                if (err) console.log("can not insert output!"+ err);
+                else
+                {
+                    resolve();
+                }
+            });
+        });
+    }
+    console.log(__dirname.replace(/\\/g, '/'))
+    //var charand=myDecode(req.body.tid);
+    //console.log("tid is:" + charand + "and before myDecode:" + req.body.tid);
+    Promise.all(promises2).then(()=>{
+        Promise.all(promises).then(() => {
+            // destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
+            //
+            // if (!fs.existsSync(destAddr)) {
+            //     fs.mkdirSync(destAddr);
+            // }
+            // var finalPath = "";
+            // var i = 0;
+            // var namae = "class" + i + ".csv";
+            // finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
+            // while (fs.existsSync("1" + finalPath)) {
+            //     i++;
+            //     namae = "class" + i + ".csv";
+            //     finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
+            // }
+            // var srcAddress = path.join(__dirname, 'public/classes/').replace(/\\/g, '/');
+            // console.log(srcAddress + "../");
+            // for (var c = 1; c <= clusterAnalysis.length; c++) {
+            //     fs.copyFileSync(srcAddress + c + ".csv", destAddr + c + namae);
+            //     //fs.renameSync(destAddr+c+".csv",c+finalPath);
+            // }
+            console.log("uploaded.")
+            res.send(clusterAnalysis)
+        });
     });
 
 });

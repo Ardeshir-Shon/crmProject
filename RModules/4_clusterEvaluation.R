@@ -45,7 +45,7 @@ for (i in 1:k){
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Frequency)),newRFM[order(Frequency)]$Frequency)
   desc[[i]] <- (desc[[i]]*10)+getOctet(round(mean(newRFM[which(newRFM$Cluster==i),]$Monetary)),newRFM[order(Monetary)]$Monetary)
   temp <- newRFM[which(newRFM$Cluster==i),]
-  write.csv(temp,sprintf("%s/public/classes/%d.csv",tilda,i),row.names = FALSE,col.names = names(temp))
+  write.csv(temp,sprintf("%s/public/classes/%dcluster%s.csv",tilda,i,input[[2]]),row.names = FALSE,col.names = names(temp))
 }
 output <- sprintf("%d",k)
 for(i in 1:k) output<- sprintf("%s;%d",output,desc[[i]])
