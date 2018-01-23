@@ -106,6 +106,7 @@ pandoc/pandoc
 plots/
 RModules/dataHolder/
 public/classes/
+public/classdb/
 trans-df.csv
 .RData
 

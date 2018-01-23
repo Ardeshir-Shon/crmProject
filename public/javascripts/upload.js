@@ -30,15 +30,15 @@ $('#upload-input').on('change', function() {
         }
 
         $.ajax({
-            url: '/upload/'+getCookie("userID"),
+            url: '/upload/' + getCookie("userID"),
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log('upload successful!\n' + data.path+" "+data.tid);
-                document.cookie="path="+data.path+"; path=/";
-                document.cookie="tid="+data.tid+"; path=/";
+                console.log('upload successful!\n' + data.path + " " + data.tid);
+                document.cookie = "path=" + data.path + "; path=/";
+                document.cookie = "tid=" + data.tid + "; path=/";
 
             },
             xhr: function() {
@@ -81,11 +81,10 @@ $('#paramSubmit').one('click', function() {
     data.R = R;
     data.F = F;
     data.M = M;
-
     $('.modal').css('background-image', 'url(\'http://maroonagency.com/wp-content/uploads/Gif/secondLoading.gif\')');
     $('body').addClass("loading");
-    data.tid=getCookie("tid");
-    console.log("tid is sending:"+getCookie("tid"));
+    data.tid = getCookie("tid");
+    console.log("tid is sending:" + getCookie("tid"));
 
     $.ajax({
         url: "/RFMParam",
@@ -158,8 +157,8 @@ $('#signUpSubmit').on('click', function(data) {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.cookie="userID="+data.id.toString();
-                document.location.href = "/process/"+ data.id.toString();
+                document.cookie = "userID=" + data.id.toString();
+                document.location.href = "/process/" + data.id.toString();
             }
         }
     });
