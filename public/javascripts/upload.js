@@ -30,13 +30,16 @@ $('#upload-input').on('change', function() {
         }
 
         $.ajax({
-            url: '/upload',
+            url: '/upload/'+getCookie("userID"),
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log('upload successful!\n' + data);
+                console.log('upload successful!\n' + data.path+" "+data.tid);
+                document.cookie="path="+data.path+"; path=/";
+                document.cookie="tid="+data.tid+"; path=/";
+
             },
             xhr: function() {
                 // create an XMLHttpRequest
@@ -78,8 +81,11 @@ $('#paramSubmit').one('click', function() {
     data.R = R;
     data.F = F;
     data.M = M;
+
     $('.modal').css('background-image', 'url(\'http://maroonagency.com/wp-content/uploads/Gif/secondLoading.gif\')');
     $('body').addClass("loading");
+    data.tid=getCookie("tid");
+    console.log("tid is sending:"+getCookie("tid"));
 
     $.ajax({
         url: "/RFMParam",
@@ -130,7 +136,7 @@ $('#rangeSubmit').on('click', function() {
     });
 });
 
-$('#signUpSubmit').on('click', function() {
+$('#signUpSubmit').on('click', function(data) {
     var user = {}
     var name = $('#signUpName').val();
     var email = $('#signUpEmail').val();
@@ -152,7 +158,8 @@ $('#signUpSubmit').on('click', function() {
                 $("#signUpAlert").html(data.error);
                 $("#signUpAlert").show();
             } else {
-                document.location.href = "/process";
+                document.cookie="userID="+data.id.toString();
+                document.location.href = "/process/"+ data.id.toString();
             }
         }
     });

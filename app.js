@@ -9,6 +9,7 @@ var mysql = require('mysql');
 var arraylist = require("arraylist");
 var R = require("r-script");
 var CryptoJS = require("crypto-js");
+var dateTime = require('node-datetime');
 let ExplinCluster = require("./ExplainCluster.js")
 let config = require('./public/javascripts/config.js');
 var con = mysql.createConnection(config);
@@ -36,9 +37,20 @@ app.engine('handlebars', expressHandlebars({
 
 app.use(bodyParser.json());
 
+function myDecode(encoded) {
+    var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(encoded, "Secret Passphrase"));
+    var idG = "";
+    for (var i = 1; i < idPadded.length; i += 2) {
+        idG = idG + idPadded.charAt(i);
+    }
+    return parseInt(idG, 10);
+}
+
 app.get('/process/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/index.handlebars'));
     //console.log(req.params.id)
+    var id=myDecode(req.params.id);
+    console.log("id is:"+id);
 });
 
 app.get('/', function(req, res) {
@@ -51,16 +63,13 @@ app.get('/login', function(req, res) {
 
 app.get('/dashboard/:id', function(req, res) {
     res.render(path.join(__dirname, 'views/Dashboard.handlebars'));
-    //console.log("user id is: " + CryptoJS.AES.decrypt( req.params.id,"Secret Passphrase"));
-    // var bytes=CryptoJS.AES.decrypt(req.params.id,'secret key 123');
-    // console.log(JSON.parse(bytes.toString(CryptoJS.enc.Utf8)))
     console.log(decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase")))
-    var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase"));
-    var idG = "";
-    for (var i = 1; i < idPadded.length; i += 2) {
-        idG = idG + idPadded.charAt(i);
-    }
-    idG = parseInt(idG, 10);
+    // var idPadded = decodeURIComponent(CryptoJS.RabbitLegacy.decrypt(req.params.id, "Secret Passphrase"));
+    // var idG = "";
+    // for (var i = 1; i < idPadded.length; i += 2) {
+    //     idG = idG + idPadded.charAt(i);
+    // }
+    var idG = myDecode(req.params.id);//parseInt(idG, 10);
     console.log(idG);
     console.log(typeof idG);
 });
@@ -70,7 +79,7 @@ app.get('/download/:id', function(req, res) {
     res.download(file);
 });
 
-app.post('/upload', function(req, res) {
+app.post('/upload/:id', function(req, res){
 
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -79,24 +88,86 @@ app.post('/upload', function(req, res) {
     form.multiples = true;
 
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, '/');
+    form.uploadDir = path.join(__dirname, '/public/uploaded/');
 
+    if (!fs.existsSync(form.uploadDir)) {
+        fs.mkdirSync(form.uploadDir);
+    }
+    var finalPath="";
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
-        fs.rename(file.path, path.join(form.uploadDir, "trans-df.csv"));
-        console.log("uploaded.")
-        var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        console.log(out);
-        minMaxValues = out;
-        console.log(minMaxValues.split(";")[3]) // 3 is max of F as you can understand
-        try {
-            var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
-        } catch (err) {
-            console.log("plots created ...")
-        }
-        res.end("success");
+        var id=myDecode(req.params.id);
+        console.log(id);
+        var tid="";
+        let p1= new Promise(function (resolve,reject) {
+            var i=0;
+            finalPath = path.join(form.uploadDir, "trans-df"+i+".csv");
+            while(fs.existsSync(finalPath))
+            {
+                i++;
+                finalPath = path.join(form.uploadDir, "trans-df"+i+".csv").replace(/\\/g, '/');
+            }
+            fs.renameSync(file.path, finalPath);
+            console.log("uploaded.")
+            var out = R("RModules/1_extractRFM.R").data(__dirname.replace(/\\/g, '/'),finalPath).callSync();
+            var out = R("RModules/2_normalization.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            console.log(out);
+            minMaxValues = out;
+            console.log(minMaxValues.split(";")[3]) // 3 is max of F as you can understand
+            // try {
+            //     var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/')).callSync();
+            // } catch (err) {
+            //     console.log("plots created ...")
+            // }
+            resolve();
+        });
+        let p2=new Promise(function (resolve,reject) {
+
+            //let p1=new Promise(function (resolve,reject){
+                var dt = dateTime.create();
+                var formatted = dt.format('Y-m-d H:M:S');
+                console.log(finalPath);
+                console.log(formatted);
+                var sqlQuery= "INSERT INTO crm.transactions (input_file,t_date) VALUES('"+finalPath+"','"+formatted+"');";
+                con.query(sqlQuery,function (err,result) {
+                   if (err) console.log("can not insert transaction");
+                   else {
+                       con.query("SELECT LAST_INSERT_ID() AS lastinsert",function (err,result) {
+                           tid=JSON.stringify(result[0].lastinsert);
+                           console.log("tid is:"+tid+typeof tid);
+                           if (err) console.log("did not mine tid");
+                           else{
+                               var sqlQuery= "INSERT INTO crm.user_transactions (uid,tid) VALUES('"+id+"','"+tid+"');";
+                               con.query(sqlQuery,function (err,result) {
+                                   if (err) console.log("user transaction did not added");
+                                   else
+                                       resolve();
+                               })
+                           }
+                       })
+                   }
+                });
+            //});
+            // p1.then(()=>{
+            //     console.log("sql jobs done");
+            //     resolve();
+            // })
+        });
+        p1.then(() =>{
+            console.log("p1 done");
+            p2.then(()=>{
+                console.log("p2 done")
+                var pathTid={};
+                console.log(finalPath+" "+tid);
+                encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(finalPath, "Secret Passphrase").toString())
+                pathTid.path=encodeURIComponent(finalPath);
+                pathTid.tid=encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(tid, "Secret Passphrase").toString());
+                console.log(pathTid.path+" "+pathTid.tid);
+                console.log(decodeURIComponent(pathTid.path)+" "+myDecode(pathTid.tid))
+                res.send(pathTid);
+            });
+        });
     });
 
     // log any errors that occur
@@ -113,21 +184,41 @@ app.post('/upload', function(req, res) {
 app.post('/', function(req, res) {
     var signUpRespond = {};
     signUpRespond.error = "";
+    signUpRespond.id="";
 
-    function errorSet(respond) {
+    function errorSet(respond,id) {
         signUpRespond.error = respond;
+        signUpRespond.id=id;
         res.send(signUpRespond);
     }
 
     function respondhandling(whenDone) {
+        var idOfUser;
         if (req.body.name !== "" && req.body.email !== "" && req.body.password !== "" && req.body.rePassword !== "") {
             if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(req.body.email)) {
                 if (req.body.password == req.body.rePassword) {
                     var sql = "INSERT INTO users (name, email, password) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.password + "')";
                     con.query(sql, function(err, result) {
-                        if (err) throw err;
-                        console.log("user inserted.");
-                        whenDone("you signed up.")
+                        if (err) {
+                            console.log("nashod dge!");
+                            whenDone('حساب کاربری دیگری با این پست الکترونیک قبلاً ثبت نام کرده است.');
+                        }
+                        else
+                        {
+                            let p1 = new Promise(function(resolve, reject) {
+                                var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
+                                con.query(sqlGetId, function(err, result) {
+                                    if (err) throw err; // type not defined in DB
+                                    resolve(idOfUser = JSON.stringify(result[0].id));
+                                });
+                            });
+                            p1.then(() => {
+                                whenDone("you signed up.", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                                console.log("user inserted.");
+                                console.log(idOfUser);
+                                console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            });
+                        }
                     });
                 } else {
                     console.log("passwords doesn't match!")
@@ -171,12 +262,10 @@ app.post('/login', function(req, res) {
                             var sqlGetId = "SELECT `id` FROM users WHERE email ='" + req.body.email + "'";
                             con.query(sqlGetId, function(err, result) {
                                 if (err) throw err; // type not defined in DB
-                                //CryptoJS.AES.encrypt(3,"Secret Passphrase")
                                 resolve(idOfUser = JSON.stringify(result[0].id));
                             });
                         });
                         p1.then(() => {
-                            //CryptoJS.AES.encrypt("my message", 'secret key 123')
                             whenDone("you logged in!", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                             console.log(idOfUser);
                             console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
@@ -194,7 +283,17 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
+    // if (req.params.tid != "undefined")
+    //     var tid=myDecode(req.params.tid);
+    // else
+        //console.log(req.params.tid+" is not defined");
+    try {
+
+        var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/'),req.params.R,req.params.F,req.params.M).callSync();
+    } catch (err) {
+        console.log("plots created ...")
+    }
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'),req.params.R,req.params.F,req.params.M).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
     var promises = [];
@@ -217,6 +316,29 @@ app.post('/RFMParam', function(req, res) {
     }
     console.log(__dirname.replace(/\\/g, '/'))
     Promise.all(promises).then(() => {
+        //console.log("tid is:"+tid);
+        destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
+
+        if (!fs.existsSync(destAddr)) {
+            fs.mkdirSync(destAddr);
+        }
+        var finalPath="";
+        var i=0;
+        var namae="class"+i+".csv";
+        finalPath = path.join(destAddr,namae ).replace(/\\/g, '/');
+        while(fs.existsSync("1"+finalPath))
+        {
+            i++;
+            namae="class"+i+".csv";
+            finalPath = path.join(destAddr, namae).replace(/\\/g, '/');
+        }
+        var srcAddress=path.join(__dirname, 'public/classes/').replace(/\\/g, '/');
+        console.log(srcAddress+"../");
+        for (var c=1;c<=clusterAnalysis.length;c++){
+            fs.copyFileSync(srcAddress+c+".csv",destAddr+c+namae);
+            //fs.renameSync(destAddr+c+".csv",c+finalPath);
+        }
+        console.log("uploaded.")
         res.send(clusterAnalysis)
     });
 
