@@ -81,10 +81,11 @@ $('#paramSubmit').one('click', function() {
     data.R = R;
     data.F = F;
     data.M = M;
+    data.tid = getCookie("tid");
+    console.log("tid is sending: " + getCookie("tid") + "R is: " + data.R);
+
     $('.modal').css('background-image', 'url(\'http://maroonagency.com/wp-content/uploads/Gif/secondLoading.gif\')');
     $('body').addClass("loading");
-    data.tid = getCookie("tid");
-    console.log("tid is sending:" + getCookie("tid"));
 
     $.ajax({
         url: "/RFMParam",

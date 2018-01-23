@@ -14,8 +14,8 @@ setEnviromentVar <- function(data,tilda,name){
 
 testFun <- function(x){
   # 2 10 5
-  #return(input[[3]]*as.numeric(x$freq_type)+input[[4]]*as.numeric(x$mone_type)+input[[2]]*as.numeric(x$rec_type))
-  return(2*as.numeric(x$freq_type)+10*as.numeric(x$mone_type)+5*as.numeric(x$rec_type))
+  return(as.numeric(input[[3]])*as.numeric(x$freq_type)+as.numeric(input[[4]])*as.numeric(x$mone_type)+as.numeric(input[[2]])*as.numeric(x$rec_type))
+  #return(2*as.numeric(x$freq_type)+10*as.numeric(x$mone_type)+5*as.numeric(x$rec_type))
 }
 
 tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#

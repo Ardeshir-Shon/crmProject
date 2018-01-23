@@ -43,7 +43,7 @@ function myDecode(encoded) {
     for (var i = 1; i < idPadded.length; i += 2) {
         idG = idG + idPadded.charAt(i);
     }
-    return parseInt(idG, 10);
+    return idG;
 }
 
 app.get('/process/:id', function(req, res) {
@@ -70,7 +70,7 @@ app.get('/dashboard/:id', function(req, res) {
         //     idG = idG + idPadded.charAt(i);
         // }
     var idG = myDecode(req.params.id); //parseInt(idG, 10);
-    console.log(idG);
+    // console.log("type "idG);
     console.log(typeof idG);
 });
 
@@ -284,13 +284,14 @@ app.post('/RFMParam', function(req, res) {
     //     var tid=myDecode(req.params.tid);
     // else
     //console.log(req.params.tid+" is not defined");
+    console.log("req.params.R is: " + req.body.R + " req.params.tid is: " + req.body.tid);
     try {
 
-        var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/'), req.params.R, req.params.F, req.params.M).callSync();
+        var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/'), req.body.R, req.body.F, req.body.M).callSync();
     } catch (err) {
         console.log("plots created ...")
     }
-    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'), req.params.R, req.params.F, req.params.M).callSync();
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/')).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
     var promises = [];
@@ -312,8 +313,8 @@ app.post('/RFMParam', function(req, res) {
         });
     }
     console.log(__dirname.replace(/\\/g, '/'))
+    console.log("tid is:" + myDecode(req.body.tid) + "and before myDecode:" + req.body.tid);
     Promise.all(promises).then(() => {
-        //console.log("tid is:"+tid);
         destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
 
         if (!fs.existsSync(destAddr)) {

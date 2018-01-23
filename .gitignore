@@ -107,6 +107,7 @@ plots/
 RModules/dataHolder/
 public/classes/
 public/classdb/
+public/uploaded/
 trans-df.csv
 .RData
 
