@@ -68,6 +68,7 @@ $('#upload-input').on('change', function() {
     }
 });
 
+
 $('#paramSubmit').one('click', function() {
     var data = {}
     var R = $('#RParam').val();
@@ -77,6 +78,8 @@ $('#paramSubmit').one('click', function() {
     data.R = R;
     data.F = F;
     data.M = M;
+    $('.modal').css('background-image', 'url(\'http://maroonagency.com/wp-content/uploads/Gif/secondLoading.gif\')');
+    $('body').addClass("loading");
 
     $.ajax({
         url: "/RFMParam",
@@ -85,6 +88,7 @@ $('#paramSubmit').one('click', function() {
         type: "POST",
         success: (data) => {
             $("#nextOfParam").show();
+            $('body').removeClass("loading");
             data = data.reverse();
             dataStr = data.toString()
             console.log("reverse dataStr is: " + dataStr);
