@@ -71,12 +71,44 @@ app.get('/dashboard/:id', function(req, res) {
         //     idG = idG + idPadded.charAt(i);
         // }
     var idG = myDecode(req.params.id); //parseInt(idG, 10);
-    console.log("idg in dashboard: "+idG);
+    console.log("idg in dashboard: " + idG);
     console.log(typeof idG);
 });
 
-app.get('/download/:id', function(req, res) {
-    var file = path.join(__dirname, 'public/classes/' + req.params.id + '.csv')
+app.post('/prevAnalysis', function(req, res) {
+    //res.render(path.join(__dirname, 'views/results.handlebars'));
+    let p1 = new Promise(function(resolve, reject) {
+        var sqlQuery = "SELECT A.tid,B.t_date FROM user_transactions AS A,transactions AS B WHERE A.tid=B.id AND uid= '" + req.body.id + "'";
+        con.query(sqlQuery, function(err, result) {
+            if (err) console.log("can not refine tid" + err);
+            else
+                resolve(result);
+        })
+    });
+    p1.then((data) => {
+        tdata = data;
+        res.send(tdata);
+    });
+
+});
+
+app.post('/observe/:tid', function(req, res) {
+    let p1 = new Promise(function(resolve, reject) {
+        var sqlQuery = "SELECT A.tid, B.desc, A.o_file FROM outputs AS A,class_desc AS B WHERE A.type_class=B.type AND A.tid= '" + req.body.id + "'";
+        con.query(sqlQuery, function(err, result) {
+            if (err) console.log("can not refine tid" + err);
+            else
+                resolve(result);
+        })
+    });
+    p1.then((data) => {
+        tdata = data;
+        res.send(tdata);
+    });
+});
+
+app.get('/download/:id/:tid', function(req, res) {
+    var file = path.join(__dirname, 'public/classes/' + req.params.id + "cluster" + req.params.tid + '.csv')
     res.download(file);
 });
 
@@ -158,16 +190,16 @@ app.post('/upload/:id', function(req, res) {
             console.log("p1 done");
             p2.then(() => {
                 var pathTid = {};
-                let p1=new Promise(function (resolve,reject) {
-                    resolve(pathTid.path = encodeURIComponent(finalPath),pathTid.tid=tid);
+                let p1 = new Promise(function(resolve, reject) {
+                    resolve(pathTid.path = encodeURIComponent(finalPath), pathTid.tid = tid);
                     //resolve(pathTid.path = encodeURIComponent(finalPath),pathTid.tid=encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(tid, "Secret Passphrase").toString()));
                 });
-                let p2=new Promise(function (resolve,reject) {
+                let p2 = new Promise(function(resolve, reject) {
                     resolve(res.send(pathTid));
                 });
-                p1.then(()=>{
-                    p2.then(()=>{
-                        console.log("before encode:"+finalPath + " " + tid);
+                p1.then(() => {
+                    p2.then(() => {
+                        console.log("before encode:" + finalPath + " " + tid);
                         //encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(finalPath, "Secret Passphrase").toString())
                         //console.log("after encode:"+pathTid.path + " " + pathTid.tid);
                         //console.log("after decode"+decodeURIComponent(pathTid.path) + " " + myDecode(pathTid.tid))
@@ -220,7 +252,7 @@ app.post('/', function(req, res) {
                             });
                             p1.then(() => {
                                 //whenDone("you signed up.", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
-                                whenDone("you signed up.",idOfUser);
+                                whenDone("you signed up.", idOfUser);
                                 console.log("user inserted.");
                                 console.log(idOfUser);
                                 //console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
@@ -243,15 +275,20 @@ app.post('/', function(req, res) {
     respondhandling(errorSet);
 });
 
+
+
+
 app.post('/login', function(req, res) {
 
     var loginRespond = {};
     loginRespond.error = "";
-    loginRespond.idd = "";
+    loginRespond.id = "";
+    loginRespond.tdata = "";
 
-    function errorSet(respond, id_in) {
+    function errorSet(respond, id_in, resultTdata) {
         loginRespond.error = respond;
-        loginRespond.idd = id_in;
+        loginRespond.id = id_in;
+        loginRespond.tdata = resultTdata;
         res.send(loginRespond);
     }
 
@@ -274,9 +311,22 @@ app.post('/login', function(req, res) {
                         });
                         p1.then(() => {
                             //whenDone("you logged in!", encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
-                            whenDone("you logged in!",idOfUser);
-                            console.log(idOfUser);
-                            //console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
+                            let pr1 = new Promise(function(resolve, reject) {
+                                var sqlQuery = "SELECT A.tid,B.t_date FROM user_transactions AS A,transactions AS B WHERE A.tid=B.id AND uid= '" + idOfUser + "'";
+                                con.query(sqlQuery, function(err, result) {
+                                    if (err) console.log("can not refine tid" + err);
+                                    else
+                                        resolve(result);
+                                })
+                            });
+                            pr1.then((result) => {
+                                    whenDone("you logged in!", idOfUser, result);
+                                    console.log(idOfUser);
+                                    //console.log(result);
+                                    console.log(JSON.parse(JSON.stringify(result[10].tid)));
+                                    console.log(JSON.parse(JSON.stringify(result[10].t_date)));
+                                })
+                                //console.log(encodeURIComponent(CryptoJS.RabbitLegacy.encrypt(idOfUser, "Secret Passphrase").toString()));
                         });
                     }
                 });
@@ -291,18 +341,15 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/RFMParam', function(req, res) {
-    // if (req.params.tid != "undefined")
-    //     var tid=myDecode(req.params.tid);
-    // else
-    //console.log(req.params.tid+" is not defined");
-    console.log("req.params.R is: " + req.body.R + " req.params.tid is: " + req.body.tid);
+
+    console.log("req.body.R is: " + req.body.R + " req.body.tid is: " + req.body.tid);
     try {
 
         var out = R("RModules/3_optimumNumber.R").data(__dirname.replace(/\\/g, '/'), req.body.R, req.body.F, req.body.M).callSync();
     } catch (err) {
         console.log("plots created ...")
     }
-    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'),req.body.tid).callSync();
+    var out = R("RModules/4_clusterEvaluation.R").data(__dirname.replace(/\\/g, '/'), req.body.tid).callSync();
     console.log("clusters evaluated ...")
     var clusterAnalysis = new arraylist;
     var promises = [];
@@ -330,21 +377,20 @@ app.post('/RFMParam', function(req, res) {
     }
 
     function addOutputs(idx) {
-        return new Promise(function (resolve,reject) {
-            var sql="INSERT INTO crm.outputs(tid,type_class,o_file) VALUES('"+req.body.tid+"','"+evaluateClusters.split(";")[idx]+"','"+__dirname.replace(/\\/g, '/')+"/public/classes/"+idx+"cluster"+req.body.tid+".csv');";
-            con.query(sql,function (err,result) {
-                if (err) console.log("can not insert output!"+ err);
-                else
-                {
+        return new Promise(function(resolve, reject) {
+            var sql = "INSERT INTO crm.outputs(tid,type_class,o_file) VALUES('" + req.body.tid + "','" + evaluateClusters.split(";")[idx] + "','" + __dirname.replace(/\\/g, '/') + "/public/classes/" + idx + "cluster" + req.body.tid + ".csv');";
+            con.query(sql, function(err, result) {
+                if (err) console.log("can not insert output!" + err);
+                else {
                     resolve();
                 }
             });
         });
     }
     console.log(__dirname.replace(/\\/g, '/'))
-    //var charand=myDecode(req.body.tid);
-    //console.log("tid is:" + charand + "and before myDecode:" + req.body.tid);
-    Promise.all(promises2).then(()=>{
+        //var charand=myDecode(req.body.tid);
+        //console.log("tid is:" + charand + "and before myDecode:" + req.body.tid);
+    Promise.all(promises2).then(() => {
         Promise.all(promises).then(() => {
             // destAddr = path.join(__dirname, 'public/classdb/').replace(/\\/g, '/');
             //

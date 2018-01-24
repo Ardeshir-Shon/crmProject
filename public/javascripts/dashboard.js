@@ -5,17 +5,14 @@ var animating; //flag to prevent quick multi-click glitches
 $(".next").click(function() {
     if (animating) return false;
     // animating = true;
-    current_fs = $(this).parent();
-    next_fs = $(this).parent().next();
+    current_fs = $(this).parent().parent().parent();
+    next_fs = $(this).parent().parent().parent().next();
 
     //activate next step on progressbar using the index of next_fs
     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
     //show the next fieldset
-    next_fs.show(() => {
-        if (next_fs.hasClass("hasSlides"))
-            loadslider();
-    });
+    next_fs.show();
     //hide the current fieldset with style
     current_fs.animate({ opacity: 0 }, {
         step: function(now, mx) {

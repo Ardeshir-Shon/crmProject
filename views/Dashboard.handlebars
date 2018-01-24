@@ -15,32 +15,73 @@
 <body>
 <div class="container-fluid">
 <div class="form-horizontal" id="msform" >
+    <ul id="progressbar" style = "display: none;">
+        <li class="active">آشنایی</li>
+        <li>تعیین ضرایب</li>
+        <li>تعیین ضرایب</li>
+    </ul>
     <fieldset>
+        <div class = "row">
+            <h2 class="fs-title" style="font-size: 15px; line-height: 20px; text-align: right;">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.</h2>
+        </div>
         <div class="row">
-            <div class="col-sm-3" style="margin-top: 20px; margin-bottom: 20px;">
-                <button type="button" id= "newAnalysis" class="btn" style=" background: #27AE60; font-size: 18px; font-weight: bold; color: white; border: 0 none; border-radius: 1px; cursor: pointer;border-radius: 5px;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp بررسی داده‌های جدید</button>
+            <div class="col-sm-6" style="margin-top: 20px; margin-bottom: 20px;">
+                <button type="button" id= "newAnalysis" class="btn" style=" background: #27AE60; width: 245px; font-size: 18px; font-weight: bold; color: white; border: 0 none; border-radius: 1px; cursor: pointer;border-radius: 5px;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp بررسی داده‌های جدید</button>
+            </div>
+            <div class="col-sm-6" style="margin-top: 20px; margin-bottom: 20px;">
+                <button type="button" id= "prevAnalysis" class="next btn" style=" background: #27AE60; width: 245px; font-size: 18px; font-weight: bold; color: white; border: 0 none; border-radius: 1px; cursor: pointer;border-radius: 5px;"><i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp مشاهده تحلیل‌های پیشین</button>
             </div>
         </div>
 
+        
         {{!-- <div class = "row">
-            <h2 class="fs-title" style="font-size: 15px; line-height: 20px; text-align: right;">لورم ایپسوم یا طرح‌نما (به انگلیسی: Lorem ipsum) به متنی آزمایشی و بی‌معنی در صنعت چاپ، صفحه‌آرایی و طراحی گرافیک گفته می‌شود. طراح گرافیک از این متن به عنوان عنصری از ترکیب بندی برای پر کردن صفحه و ارایه اولیه شکل ظاهری و کلی طرح سفارش گرفته شده استفاده می نماید، تا از نظر گرافیکی نشانگر چگونگی نوع و اندازه فونت و ظاهر متن باشد. معمولا طراحان گرافیک برای صفحه‌آرایی، نخست از متن‌های آزمایشی و بی‌معنی استفاده می‌کنند تا صرفا به مشتری یا صاحب کار خود نشان دهند که صفحه طراحی یا صفحه بندی شده بعد از اینکه متن در آن قرار گیرد چگونه به نظر می‌رسد و قلم‌ها و اندازه‌بندی‌ها چگونه در نظر گرفته شده‌است. از آنجایی که طراحان عموما نویسنده متن نیستند و وظیفه رعایت حق تکثیر متون را ندارند و در همان حال کار آنها به نوعی وابسته به متن می‌باشد آنها با استفاده از محتویات ساختگی، صفحه گرافیکی خود را صفحه‌آرایی می‌کنند تا مرحله طراحی و صفحه‌بندی را به پایان برند.</h2>
-        </div> --}}
-        <div class = "row">
             <h2 class="fs-title" style="font-size: 18px; font-weight: bold; line-height: 20px; text-align: right;"> نتایج تحلیل‌های پیشین:</h2>
         </div>
         <div class="row"></div>
-        <div class="row" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
-            <div class="col-sm-10" id = "clusterText" style="padding-top:14px; padding-bottom: 14px;">
-                <p style="text-align:right">چرت  و پرت!</p>
+        <div class="row" id = "dashboardResult" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+            <div class="col-sm-10" id = "transactionText" style="padding-top:14px; padding-bottom: 14px;">
+                <p style="text-align:right">برای مشاهده‌ی نتایج تحلیل‌های پیشین کلیک کنید.</p>
             </div>
-            <div class="col-sm-2" style="padding-top:14px; padding-bottom: 14px;">
-                <a id= "download" href="#"><button type="button" class="btn btn-success"><i class="fa fa-arrows-alt" aria-hidden="true"></i>&nbsp مشاهده‌ نتایج</button></a>
+            <div class="col-sm-2" id = "observe" style="padding-top:14px; padding-bottom: 14px;">
+                <a id= "download" href="#"></a><button id = "" type="button" class="btn btn-success"><i class="fa fa-arrows-alt" aria-hidden="true"></i>&nbsp مشاهده‌ نتایج</button></a>
             </div>
-        </div>
+        </div> --}}
         
     </fieldset>
+    
+    <fieldset>
+        <div class = "row">
+            <h2 class="fs-title" style="font-size: 18px; font-weight: bold; line-height: 20px; text-align: right;"> نتایج تحلیل‌های پیشین:</h2>
+        </div>
+       <div class="col-sm-5" id = "dashboardResult" style="margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+            <div class="col-sm-6" id = "transactionText" style="padding-top:14px; padding-bottom: 14px;">
+                <p style="text-align:right">تاریخ گزارش:</p>
+            </div>
+            <div class="col-sm-6" id = "observe" style="padding-top:14px; padding-bottom: 14px;">
+                <button id = "observe" type="button" class="btn btn-success next"><i class="fa fa-arrows-alt" aria-hidden="true"></i>&nbsp مشاهده‌ نتایج</button>
+            </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="بازگشت" />
+        
+    </fieldset>
+
+    <fieldset>
+        <div class="row">
+            <div class="row" id = "salam" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+                <div class="col-sm-10" id = "hello" style="padding-top:14px; padding-bottom: 14px;">
+                    <p style="text-align:right">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</p>
+                </div>
+                <div class="col-sm-2" style="padding-top:14px; padding-bottom: 14px;">
+                    <a id= "download" href="/download/1" download><button type="button" class="btn btn-success"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i>&nbsp دانلود</button></a>
+                </div>
+            </div>
+        </div>
+        <input type="button" name="previous" class="previous action-button" value="قبلی" />  
+    </fieldset>
+
     </div>
 </div>
+<script src="/javascripts/dashboard.js"></script>
 <script src="/javascripts/upload.js"></script>
 </body>
 </html>

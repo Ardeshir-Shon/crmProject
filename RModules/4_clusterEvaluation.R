@@ -20,11 +20,11 @@ getOctet <- function(number,col){
 tilda=input[[1]]#"C:/Users/user/IdeaProjects/crmProject"#
 
 newRFMClustered <- getEnviromentVar(tilda,"newRFM") #pipeline passing enviroment
+binset <- getEnviromentVar(tilda,"binset") #pipeline passing enviroment
 newRFM <- newRFMClustered[,-5]
 
 wss <- (nrow(newRFM)-1)*sum(apply(newRFM,2,var))
-for (i in 2:20) wss[i] <- sum(kmeans(newRFM,
-                                     centers=i,nstart = 3)$withinss)
+for (i in 2:20) wss[i] <- sum(kmeans(newRFM,centers=i,nstart = 3)$withinss)
 scaledWSS <- scale(wss)
 k <- 0
 for(i in 1:19){
@@ -35,6 +35,7 @@ for(i in 1:19){
 }
 
 newRFM <- newRFMClustered
+newRFM <- data.table(newRFM,Value=binset$value)
 #describe each cluster
 addr=sprintf("%s/public/classes",tilda)
 dir.create(addr)

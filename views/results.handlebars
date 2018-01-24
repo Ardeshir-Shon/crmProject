@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
+     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/5881fd899f.js"></script>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid">
+<div class="form-horizontal" id="msform" >
+    <fieldset>
+        <div class="row">
+            <div class="col-sm-3" style="margin-top: 20px; margin-bottom: 20px;">
+                <button type="button" id= "newAnalysis" class="btn" style=" background: #27AE60; font-size: 18px; font-weight: bold; color: white; border: 0 none; border-radius: 1px; cursor: pointer;border-radius: 5px;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp بررسی داده‌های جدید</button>
+            </div>
+        </div>
+
+        {{!-- <div class = "row">
+            <h2 class="fs-title" style="font-size: 15px; line-height: 20px; text-align: right;">لورم ایپسوم یا طرح‌نما (به انگلیسی: Lorem ipsum) به متنی آزمایشی و بی‌معنی در صنعت چاپ، صفحه‌آرایی و طراحی گرافیک گفته می‌شود. طراح گرافیک از این متن به عنوان عنصری از ترکیب بندی برای پر کردن صفحه و ارایه اولیه شکل ظاهری و کلی طرح سفارش گرفته شده استفاده می نماید، تا از نظر گرافیکی نشانگر چگونگی نوع و اندازه فونت و ظاهر متن باشد. معمولا طراحان گرافیک برای صفحه‌آرایی، نخست از متن‌های آزمایشی و بی‌معنی استفاده می‌کنند تا صرفا به مشتری یا صاحب کار خود نشان دهند که صفحه طراحی یا صفحه بندی شده بعد از اینکه متن در آن قرار گیرد چگونه به نظر می‌رسد و قلم‌ها و اندازه‌بندی‌ها چگونه در نظر گرفته شده‌است. از آنجایی که طراحان عموما نویسنده متن نیستند و وظیفه رعایت حق تکثیر متون را ندارند و در همان حال کار آنها به نوعی وابسته به متن می‌باشد آنها با استفاده از محتویات ساختگی، صفحه گرافیکی خود را صفحه‌آرایی می‌کنند تا مرحله طراحی و صفحه‌بندی را به پایان برند.</h2>
+        </div> --}}
+        <div class = "row">
+            <h2 class="fs-title" style="font-size: 18px; font-weight: bold; line-height: 20px; text-align: right;"> نتایج تحلیل‌های پیشین:</h2>
+        </div>
+        <div class="row"></div>
+        <div class="row" id = "dashboardResult" style="width: 90%; margin-right: 5% ;margin-top: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.05);">
+            <div class="col-sm-10" id = "transactionText" style="padding-top:14px; padding-bottom: 14px;">
+                <p style="text-align:right">صفحه جدید نتایج</p>
+            </div>
+            <div class="col-sm-2" id = "observe" style="padding-top:14px; padding-bottom: 14px;">
+                <a id= "download" href="#"><button type="button" class="btn btn-success"><i class="fa fa-arrows-alt" aria-hidden="true"></i>&nbsp مشاهده‌ نتایج</button></a>
+            </div>
+        </div>
+        
+    </fieldset>
+    </div>
+</div>
+<script src="/javascripts/upload.js"></script>
+</body>
+</html>
