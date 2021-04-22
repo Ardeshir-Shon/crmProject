@@ -1,7 +1,18 @@
 # crmProject
 
-upload your CSV file of transactions 
+This is a web application which designed to e-commerce owners understand their customers better. This helps owners to promote more precise and predict churn probabilty of their customers in advance. 
 
-and give us your buisiness domain to
+Data Analysis Language: R
+Backend : Node.JS
+Database: Microsoft SQL Server
+Front: HTML, CSS, JQuery
 
-get optimum way of customer segmentation.
+Steps: 
+  - Upload your CSV file of customer transactions.
+  - Set RFM weights based on your business.
+  - Results are ready!
+
+TODO:
+  - Complete history of users.
+  - Save previous results.
+  - Compare results for selected analysis.
